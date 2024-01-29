@@ -15,7 +15,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "com.lift",
+      "useFrameworks": "static"
     },
     "android": {
       "adaptiveIcon": {
