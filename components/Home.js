@@ -1,11 +1,11 @@
-import { Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { Text, TouchableOpacity, StyleSheet, View } from 'react-native'
 
 const Home = () => {
     return (
         <View style={style.homeContainer}>
-            <TouchableOpacity>My Routines</TouchableOpacity>
-            <TouchableOpacity>Create Routines</TouchableOpacity>
-            <TouchableOpacity>My Lifts</TouchableOpacity>
+            <TouchableOpacity><Text>My Routines</Text></TouchableOpacity>
+            <TouchableOpacity><Text>Create Routines</Text></TouchableOpacity>
+            <TouchableOpacity><Text>My Lifts</Text></TouchableOpacity>
 
         </View>
     )
