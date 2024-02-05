@@ -1,16 +1,37 @@
 import { Text, TouchableOpacity, StyleSheet, View, Image, ImageBackground } from 'react-native'
 import backgroundImg from '../assets/login_fitness_image.jpeg';
-import Tab from './Tab.js'
+import { createStackNavigator } from '@react-navigation/stack';
+import Tab from './Tab.js';
+import MyRoutines from './MyRoutines.js';
 
-const Home = () => {
+const Stack = createStackNavigator();
+
+const Home = ({ navigation }) => {
+    return (
+        <Stack.Navigator
+            initialRouteName="HomeScreen"
+        >
+            <Stack.Screen name="MyRoutines" component={MyRoutines} />
+            <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        </Stack.Navigator>
+
+
+    )
+}
+
+const HomeScreen = ({ navigation }) => {
+
     return (
         <ImageBackground source={backgroundImg} style={style.background}>
             <Tab />
             <View style={style.homeContainer}>
-                <TouchableOpacity style={style.button}><Text style={style.buttonText}>My Routines</Text></TouchableOpacity>
+                <TouchableOpacity style={style.button} onPress={() => {
+                    console.log("CLicked");
+                    navigation.navigate("MyRoutines")
+                }}>
+                    <Text style={style.buttonText} >My Routines</Text></TouchableOpacity>
                 <TouchableOpacity style={style.button}><Text style={style.buttonText}>Create Routines</Text></TouchableOpacity>
                 <TouchableOpacity style={style.button}><Text style={style.buttonText}>My Lifts</Text></TouchableOpacity>
-
 
             </View>
         </ImageBackground>
@@ -42,7 +63,8 @@ const style = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 160,
         borderColor: '#5D4DE4',
-        opacity: 1
+        opacity: 1,
+        zIndex: 20
     },
 
     buttonText: {
