@@ -3,19 +3,18 @@ import { useState, useEffect } from "react";
 import { TextInput, Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from "react-native"
 import { NavigationContainer } from '@react-navigation/native'
 
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import config from './firebaseConfig.js'
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { FIREBASE_AUTH } from './firebaseConfig.js'
 
 
 export default function App() {
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test@gmail.com");
+  const [password, setPassword] = useState("pass11");
 
-  const auth = getAuth();
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(FIREBASE_AUTH, (user) => {
     if (user) {
       const uid = user.uid;
       if (initializing) setInitializing(false);
@@ -27,7 +26,7 @@ export default function App() {
 
 
   const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(FIREBASE_AUTH, email, password)
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
@@ -52,11 +51,13 @@ export default function App() {
       <NavigationContainer>
         <View style={styles.inputBox}>
           <TextInput
+            value="test@gmail.com"
             style={styles.inputStyle}
             placeholder="Enter Email"
             onChangeText={text => setEmail(text)}
           />
           <TextInput
+            vaule="pass11"
             style={styles.inputStyle}
             placeholder="Enter Password"
             onChangeText={text => setPassword(text)}
