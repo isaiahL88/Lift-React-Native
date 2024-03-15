@@ -7,20 +7,31 @@ import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 export default function MyRoutines() {
   const [user, setuser] = useState();
   const [routines, setRoutines] = useState([]);
-  FIREBASE_AUTH.onAuthStateChanged(user => {
-    if (user) {
-      setuser(user);
 
+  useEffect(() => {
+    FIREBASE_AUTH.onAuthStateChanged(user => {
+      if (user) {
+        setuser(user);
+      }
+
+    })
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      updateUserData();
     }
-  })
+  }, [user]);
+
+  function handleRoutinePress() {
+    //todo
+  }
 
   async function updateUserData() {
     const userRoutinesRef = collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines");
     const querySnapshot = getDocs(userRoutinesRef);
     (await querySnapshot).forEach(doc => {
       const data = doc.data();
-      console.log("adding routine: " + data?.name);
-      console.log("\n\nroutines: " + routines);
 
       setRoutines(prevState => {
         return [...prevState, data];
@@ -32,25 +43,37 @@ export default function MyRoutines() {
   }
   return (
     <View style={style.container}>
-      <Text>My Routines</Text>
-      <Text>{user ? user.uid : ""}</Text>
+      <Text style={style.bigHeader}>My Routines</Text>
       <FlatList
         data={routines}
         renderItem={({ item }) => (
-          <Text>{item.name}</Text>
+          <TouchableOpacity onPress={handleRoutinePress}>
+            <Text style={style.routineContainer}>{item.name}</Text>
+          </TouchableOpacity>
         )}
         // needs to be reaplaced TODO: 
         keyExtractor={item => routines.indexOf(item)}
       />
-      <TouchableOpacity onPress={updateUserData}>
-        <Text>Click Here</Text>
-      </TouchableOpacity>
+
     </View>
   )
 };
 
 const style = StyleSheet.create({
   container: {
-
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+  ,
+  bigHeader: {
+    fontSize: 40,
+    margin: 10
+  },
+  routineContainer: {
+    fontFamily: 'nunito',
+    fontWeight: 900,
+    fontSize: 25,
+    padding: 7,
+    marginBottom: 10
   }
 });             

@@ -44,11 +44,12 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 70,
+        opacity: 1
     },
     background: {
         flex: 1,
         justifyContent: 'center',
-        opacity: 0.4
+        opacity: .5
 
     },
     button: {
@@ -70,7 +71,8 @@ const style = StyleSheet.create({
     buttonText: {
         color: "#5D4DE4",
         fontSize: 30,
-        fontFamily: 'nunitoSans',
+        fontWeight: 900,
+        fontFamily: 'nunito',
         opacity: 1
     }
 });

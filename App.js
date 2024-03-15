@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from './firebaseConfig.js'
+import { useFonts } from 'expo-font';
 
 
 export default function App() {
@@ -13,6 +14,16 @@ export default function App() {
   const [user, setUser] = useState();
   const [email, setEmail] = useState("test@gmail.com");
   const [password, setPassword] = useState("pass11");
+
+  let [fontsLoaded] = useFonts({
+    'nunito': require('./assets/fonts/nunitoSans.ttf')
+  });
+
+  if (!fontsLoaded) {
+    return <ActivityIndicator size="large" />;
+
+  }
+
 
   onAuthStateChanged(FIREBASE_AUTH, (user) => {
     if (user) {
@@ -30,7 +41,7 @@ export default function App() {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
-        Alert.alert('Alert', 'Signed In! Hello ' + user.displayName);
+        // Alert.alert('Alert', 'Signed In! Hello ' + user.displayName);
 
       })
       .catch((error) => {
@@ -109,15 +120,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 12
-  },
-  buttonText: {
-    appButtonText: {
-      fontSize: 18,
-      color: "#fff",
-      fontWeight: "bold",
-      alignSelf: "center",
-      textTransform: "uppercase"
-    }
   },
   inputStyle: {
     width: 300,
