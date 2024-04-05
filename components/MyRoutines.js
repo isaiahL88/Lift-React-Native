@@ -1,10 +1,24 @@
 import { useEffect, useState } from 'react'
-import { Text, FlatList, View, StyleSheet, TouchableOpacity } from 'react-native'
+import { Text, FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { collection, query, where, onSnapshot, getDoc, getDocs, doc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
+import RoutineBrowse from './RoutineBrowse';
 
+
+const Stack = createStackNavigator();
 
 export default function MyRoutines() {
+  return (
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen name="Home" component={MyRoutinesHome} />
+      <Stack.Screen name="RoutineBrowse" component={RoutineBrowse} />
+    </Stack.Navigator>
+  );
+}
+
+
+function MyRoutinesHome() {
   const [user, setuser] = useState();
   const [routines, setRoutines] = useState([]);
 
@@ -36,7 +50,6 @@ export default function MyRoutines() {
       setRoutines(prevState => {
         return [...prevState, data];
       });
-      console.log(routines);
 
     })
 
@@ -57,7 +70,7 @@ export default function MyRoutines() {
 
     </View>
   )
-};
+}
 
 const style = StyleSheet.create({
   container: {

@@ -1,4 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { StyleSheet } from 'react-native';
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -24,9 +26,8 @@ const RoutineBrowse = ({ routine }) => {
     }, [user]);
 
     async function updateRoutineData() {
-
+        console.log(routine)
     }
-
     return (
         <Tab.Navigator>
             {days.map((day) => {
