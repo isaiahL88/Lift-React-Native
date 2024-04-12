@@ -11,6 +11,7 @@ const Home = ({ navigation }) => {
     return (
         <Stack.Navigator
             initialRouteName="HomeScreen"
+
         >
             <Stack.Screen name="MyRoutines" component={MyRoutines} />
             <Stack.Screen name="HomeScreen" component={HomeScreen} />

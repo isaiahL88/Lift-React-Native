@@ -13,6 +13,7 @@ const RoutineBrowse = ({ route, navigation }) => {
     //Note each day will be maped to a RoutineDay component
     const [user, setuser] = useState();
     const [days, setDays] = useState(["Empty Slot"]);
+    const [splitDays, setSplitDays] = useState(); //map
 
     useEffect(() => {
         FIREBASE_AUTH.onAuthStateChanged(user => {
@@ -27,6 +28,8 @@ const RoutineBrowse = ({ route, navigation }) => {
     }, [user]);
 
     function updateRoutineData() {
+        setSplitDays(routine["splitDays"]);
+        console.log(routine["splitDays"]);
         setDays(routine["days"]);
         console.log(routine["days"])
         console.log("days updated");
@@ -45,7 +48,9 @@ const RoutineBrowse = ({ route, navigation }) => {
         return (
             <Tab.Navigator>
                 {days.map((day) => (
-                    <Tab.Screen name={day} key={day} component={DayScreen} initialParams={day} />
+                    // maps days to screens in the tab navigator
+                    // day is just the title and dayData is an array of exercies taken from split days
+                    <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day }} />
                 ))}
             </Tab.Navigator>
         )
@@ -55,10 +60,12 @@ const RoutineBrowse = ({ route, navigation }) => {
 }
 
 const DayScreen = ({ navigation, route }) => {
-    const { day } = route.params;
+    const { day, dayData } = route.params;
 
     return (
-        <Text>day</Text>
+        <Text>{day}</Text>
+
+
     )
 }
 
