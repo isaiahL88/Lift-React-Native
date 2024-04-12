@@ -8,17 +8,7 @@ import RoutineBrowse from './RoutineBrowse';
 
 const Stack = createStackNavigator();
 
-export default function MyRoutines() {
-  return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={MyRoutinesHome} />
-      <Stack.Screen name="RoutineBrowse" component={RoutineBrowse} />
-    </Stack.Navigator>
-  );
-}
-
-
-function MyRoutinesHome() {
+export default function MyRoutines({ navigation }) {
   const [user, setuser] = useState();
   const [routines, setRoutines] = useState([]);
 
@@ -37,8 +27,10 @@ function MyRoutinesHome() {
     }
   }, [user]);
 
-  function handleRoutinePress() {
+  function handleRoutinePress(routine) {
     //todo
+    navigation.navigate("RoutineBrowse", { routine: routine });
+    console.log("start routine browse?");
   }
 
   async function updateUserData() {
@@ -60,7 +52,7 @@ function MyRoutinesHome() {
       <FlatList
         data={routines}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={handleRoutinePress}>
+          <TouchableOpacity onPress={() => { handleRoutinePress(item) }}>
             <Text style={style.routineContainer}>{item.name}</Text>
           </TouchableOpacity>
         )}

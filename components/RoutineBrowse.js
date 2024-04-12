@@ -1,17 +1,18 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
+import { useEffect, useState } from 'react';
 
 
 const Tab = createMaterialTopTabNavigator();
 
 
-const RoutineBrowse = ({ routine }) => {
-
+const RoutineBrowse = ({ route, navigation }) => {
+    const { routine } = route.params;
     //Each day in the routine
     //Note each day will be maped to a RoutineDay component
     const [user, setuser] = useState();
-    const [days, setDays] = useState([]);
+    const [days, setDays] = useState(["Empty Slot"]);
 
     useEffect(() => {
         FIREBASE_AUTH.onAuthStateChanged(user => {
@@ -25,15 +26,39 @@ const RoutineBrowse = ({ routine }) => {
         }
     }, [user]);
 
-    async function updateRoutineData() {
-        console.log(routine)
+    function updateRoutineData() {
+        setDays(routine["days"]);
+        console.log(routine["days"])
+        console.log("days updated");
     }
+
+
+    if (days.length == 0) {
+        return (
+            <Tab.Navigator>
+                <Tab.Screen
+                    name="Empty"
+                    component={Text} />
+            </Tab.Navigator>
+        )
+    } else {
+        return (
+            <Tab.Navigator>
+                {days.map((day) => (
+                    <Tab.Screen name={day} key={day} component={DayScreen} initialParams={day} />
+                ))}
+            </Tab.Navigator>
+        )
+    }
+
+
+}
+
+const DayScreen = ({ navigation, route }) => {
+    const { day } = route.params;
+
     return (
-        <Tab.Navigator>
-            {days.map((day) => {
-                <Tab.Screen name={day} component={RoutineDay} initialParams={day} />
-            })}
-        </Tab.Navigator>
+        <Text>day</Text>
     )
 }
 

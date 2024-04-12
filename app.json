@@ -24,6 +24,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "01ecf126-95dd-409b-b6eb-b5d3afbc1f9b"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.isaiah88"
     }
   },
   "extra": {

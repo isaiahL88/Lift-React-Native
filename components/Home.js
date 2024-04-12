@@ -3,6 +3,7 @@ import backgroundImg from '../assets/login_fitness_image.jpeg';
 import { createStackNavigator } from '@react-navigation/stack';
 import Tab from './Tab.js';
 import MyRoutines from './MyRoutines.js';
+import RoutineBrowse from './RoutineBrowse.js';
 
 const Stack = createStackNavigator();
 
@@ -13,6 +14,7 @@ const Home = ({ navigation }) => {
         >
             <Stack.Screen name="MyRoutines" component={MyRoutines} />
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
+            <Stack.Screen name="RoutineBrowse" component={RoutineBrowse} />
         </Stack.Navigator>
 
 
