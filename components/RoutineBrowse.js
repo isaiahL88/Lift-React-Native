@@ -28,11 +28,8 @@ const RoutineBrowse = ({ route, navigation }) => {
     }, [user]);
 
     function updateRoutineData() {
-        setSplitDays(routine["splitDays"]);
-        console.log(routine["splitDays"]);
         setDays(routine["days"]);
-        console.log(routine["days"])
-        console.log("days updated");
+        setSplitDays(routine["splitDays"]);
     }
 
 
@@ -50,7 +47,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                 {days.map((day) => (
                     // maps days to screens in the tab navigator
                     // day is just the title and dayData is an array of exercies taken from split days
-                    <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day }} />
+                    <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays }} />
                 ))}
             </Tab.Navigator>
         )
@@ -61,10 +58,26 @@ const RoutineBrowse = ({ route, navigation }) => {
 
 const DayScreen = ({ navigation, route }) => {
     const { day, dayData } = route.params;
+    const [exercises, setexercises] = useState([]);
+
+    useEffect(() => {
+        console.log("day upadated: " + day);
+    }, [day]);
+    useEffect(() => {
+        console.log("day data upadated: " + dayData);
+        setexercises(dayData[day]);
+    }, [dayData]);
 
     return (
-        <Text>{day}</Text>
+        <View>
+            <Text>{day}</Text>
+            {
+                exercises.map(exercise => (
+                    <Text>exercise.name</Text>
+                ))
+            }
 
+        </View>
 
     )
 }
