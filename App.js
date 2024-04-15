@@ -1,11 +1,12 @@
 import HomePage from "./components/HomePage";
 import { useState, useEffect } from "react";
-import { TextInput, Text, View, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from "react-native"
+import { TextInput, Text, Image, View, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from "react-native"
 import { NavigationContainer } from '@react-navigation/native'
 
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from './firebaseConfig.js'
 import { useFonts } from 'expo-font';
+import logo from './assets/logo-transparent.png';
 
 
 export default function App() {
@@ -60,6 +61,10 @@ export default function App() {
   if (!user) {
     return (
       <NavigationContainer>
+        <Image
+          style={styles.imageStyle}
+          source={logo}
+        />
         <View style={styles.inputBox}>
           <TextInput
             value="test@gmail.com"
@@ -99,11 +104,15 @@ export default function App() {
 const styles = StyleSheet.create({
   inputBox: {
     alignItems: 'center',
-    justifyContent: 'center',
     flex: 1
   },
   NavigationContainer: {
     marginTop: '100px'
+  },
+  imageStyle: {
+    width: 400,
+    height: 500,
+    marginBottom: -45
   },
   mainInput: {
     height: '200px',
@@ -111,20 +120,33 @@ const styles = StyleSheet.create({
   },
   buttonBox: {
     flexDirection: 'row',
+    width: 300,
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    marginTop: 12,
   },
   button: {
     elevation: 8,
-    backgroundColor: "#009688",
-    borderRadius: 10,
+    width: 120,
+    height: 50,
+    backgroundColor: "#D7D6E710",
+    borderWidth: 1,
+    borderColor: "#5D4DE4",
+    borderRadius: 45,
     paddingVertical: 10,
-    paddingHorizontal: 12
+    paddingHorizontal: 12,
+    alignItems: 'center'
+  },
+  buttonText: {
+    fontSize: 20,
+    fontFamily: 'nunito'
   },
   inputStyle: {
     width: 300,
     height: 50,
-    backgroundColor: "#a084db",
+    backgroundColor: "#FFFFFF00",
+    borderWidth: 1,
+    borderColor: "#6F7285",
     margin: 10,
     borderRadius: 45,
     padding: 10
