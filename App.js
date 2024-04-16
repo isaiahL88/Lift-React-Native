@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   imageStyle: {
     width: 400,
     height: 500,
-    marginBottom: -45
+    marginBottom: -45,
   },
   mainInput: {
     height: '200px',
@@ -142,14 +142,15 @@ const styles = StyleSheet.create({
     fontFamily: 'nunito'
   },
   inputStyle: {
-    width: 300,
-    height: 50,
+    width: 320,
+    height: 60,
     backgroundColor: "#FFFFFF00",
     borderWidth: 1,
     borderColor: "#6F7285",
     margin: 10,
     borderRadius: 45,
-    padding: 10
+    padding: 15,
+    fontSize: 20,
   }
 });
 
