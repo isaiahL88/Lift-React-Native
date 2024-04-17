@@ -74,6 +74,7 @@ export default function App() {
           />
           <TextInput
             vaule="pass11"
+            secureTextEntry={true}
             style={styles.inputStyle}
             placeholder="Enter Password"
             onChangeText={text => setPassword(text)}
