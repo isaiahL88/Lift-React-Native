@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import home from '../assets/home.png'
 import friends from '../assets/friends.png';
 import search from '../assets/search.png';
+import HomeScreen from './HomeScreen';
 
 
 
@@ -29,7 +30,7 @@ const HomePage = () => {
                     )
                 }}
             />
-            <Tab.Screen name="Home" component={Home}
+            <Tab.Screen name="Home" component={HomeScreen}
                 options={{
                     tabBarIcon: ({ Colors, size }) => (
                         <Image source={home} />
@@ -58,6 +59,7 @@ const st = StyleSheet.create({
         width: 20
     }
 });
+
 
 export default HomePage
 

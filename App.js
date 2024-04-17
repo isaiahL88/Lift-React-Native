@@ -1,4 +1,4 @@
-import HomePage from "./components/HomePage";
+import Home from "./components/Home";
 import { useState, useEffect } from "react";
 import { TextInput, Text, Image, View, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from "react-native"
 import { NavigationContainer } from '@react-navigation/native'
@@ -97,7 +97,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <HomePage />
+      <Home />
     </NavigationContainer>
   );
 }
