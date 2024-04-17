@@ -18,6 +18,9 @@ const HomePage = () => {
             initialRouteName="Home"
             screenOptions={{
                 headerShown: false
+            }}
+            tabBarOptions={{
+                activeTintColor: '#5D4DE4',
             }}>
             <Tab.Screen name="Friends" component={Friends}
                 options={{

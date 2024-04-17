@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, Icon } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 import { useEffect, useState } from 'react';
 
@@ -43,7 +43,13 @@ const RoutineBrowse = ({ route, navigation }) => {
         )
     } else {
         return (
-            <Tab.Navigator>
+            <Tab.Navigator
+                tabBarOptions={{
+                    activeTintColor: '#5D4DE4',
+                    indicatorStyle: {
+                        backgroundColor: '#5D4DE4',
+                    }
+                }}>
                 {
                     days != null && splitDays != null ?
                         days.map((day) => (
