@@ -2,6 +2,14 @@ import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList } from "react
 import { useEffect, useState } from 'react';
 
 
+/*
+    Currently: Screen representing one day in a routine, lists out exercises
+
+    - Should be able to cutomize this day when user switches into edit mode ( this is an important efficiency funtionality)
+
+    - Difference from android here is that this screen is used both for routine creation and for regular browsing out
+      of simplicity
+*/
 const DayScreen = ({ navigation, route }) => {
     const { day, dayData } = route.params;
     const [exercises, setexercises] = useState();
@@ -9,7 +17,9 @@ const DayScreen = ({ navigation, route }) => {
     const [modalDisplay, setmodalDisplay] = useState("");
 
     useEffect(() => {
-        setexercises(dayData);
+        if (dayData != null) {
+            setexercises(dayData);
+        }
     }, [dayData]);
 
     return (

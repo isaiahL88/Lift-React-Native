@@ -45,24 +45,28 @@ const RoutineBrowse = ({ route, navigation }) => {
         )
     } else {
         return (
-            <Tab.Navigator
-                tabBarOptions={{
-                    activeTintColor: '#5D4DE4',
-                    indicatorStyle: {
-                        backgroundColor: '#5D4DE4',
+            <>
+                <Text style={style.bigHeader}>{routine.name}</Text>
+                <Tab.Navigator
+                    tabBarOptions={{
+                        activeTintColor: '#5D4DE4',
+                        indicatorStyle: {
+                            backgroundColor: '#5D4DE4',
+                        }
+                    }}>
+                    {
+                        days != null && splitDays != null ?
+                            days.map((day) => (
+                                // maps days to screens in the tab navigator
+                                // day is just the title and dayData is an array of exercies taken from split days
+                                <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day] }} />
+                            ))
+                            :
+                            <Text>Loading</Text>
                     }
-                }}>
-                {
-                    days != null && splitDays != null ?
-                        days.map((day) => (
-                            // maps days to screens in the tab navigator
-                            // day is just the title and dayData is an array of exercies taken from split days
-                            <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day] }} />
-                        ))
-                        :
-                        <Text>Loading</Text>
-                }
-            </Tab.Navigator>
+                </Tab.Navigator>
+            </>
+
         )
     }
 

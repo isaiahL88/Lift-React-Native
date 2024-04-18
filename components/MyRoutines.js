@@ -67,7 +67,8 @@ export default function MyRoutines({ navigation }) {
 const style = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop: 10
   }
   ,
   bigHeader: {

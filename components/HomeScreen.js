@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import Tab from './Tab.js'
 import backgroundImg from '../assets/login_fitness_image.jpeg';
 
 
@@ -7,14 +8,24 @@ const HomeScreen = ({ navigation }) => {
 
     return (
         <ImageBackground source={backgroundImg} style={style.background}>
+            <Tab />
             <View style={style.homeContainer}>
                 <TouchableOpacity style={style.button} onPress={() => {
                     console.log("CLicked");
                     navigation.navigate("MyRoutines")
                 }}>
-                    <Text style={style.buttonText} >My Routines</Text></TouchableOpacity>
-                <TouchableOpacity style={style.button}><Text style={style.buttonText}>Create Routines</Text></TouchableOpacity>
-                <TouchableOpacity style={style.button}><Text style={style.buttonText}>My Lifts</Text></TouchableOpacity>
+                    <Text style={style.buttonText} >My Routines</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={style.button} onPress={() => {
+                    navigation.navigate("RoutineCreate");
+                }}>
+                    <Text style={style.buttonText}>Create Routines</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={style.button}>
+                    <Text style={style.buttonText}>My Lifts</Text>
+                </TouchableOpacity>
 
             </View>
         </ImageBackground>
