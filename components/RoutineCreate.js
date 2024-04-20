@@ -29,9 +29,9 @@ const RoutineCreate = ({ route, navigtion }) => {
     //We wait for user to select a template from the modal
     useEffect(() => {
         // FullBody / Custom
-        if (value === 1) {
+        if (value === '1') {
             //nothing to add here
-        } else if (value === 2) {
+        } else if (value === '2') {
             setDays(["Push Day", "Pull Day", "Leg Day"])
         } else {
 
@@ -73,7 +73,8 @@ const RoutineCreate = ({ route, navigtion }) => {
                             placeholder={!isFocus ? 'Routine Style' : ' ...'}
                             onChange={item => {
                                 setValue(item.value);
-                                setIsFocus(false);
+                                setIsFocus(false)
+                                setmodalVisible(false);
                             }}
                         />
                         <TouchableOpacity style={style.closeButton} onPress={() => { setmodalVisible(!modalVisible) }}>

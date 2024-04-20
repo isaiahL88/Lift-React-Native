@@ -1,5 +1,7 @@
 import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useEffect, useState } from 'react';
+import { Searchbar } from 'react-native-paper';
+import csv from 'csvtojson';
 
 
 /*
@@ -15,6 +17,38 @@ const DayScreen = ({ navigation, route }) => {
     const [exercises, setexercises] = useState();
     const [modalVis, setmodalVis] = useState(false);
     const [modalDisplay, setmodalDisplay] = useState("");
+    const [exModalVisible, setexModalVisible] = useState(true);
+
+    //For Exercise Search;
+    const [searchQuery, setsearchQuery] = useState('');
+    const exerciseList = [{
+        name: 'Squat',
+        type: 'Compound Lift'
+    },
+    {
+        name: 'Bench',
+        type: 'Compound Lift'
+    }];
+
+    const [searchExercises, setdisplayExercises] = useState();
+
+    //Exercise Detail State
+    const [exDetailVisible, setexDetailVisisble] = useState(flase);
+    //Used in check to indicate exercise is timed and needs a timed input
+    const [isTimed, setisTimed] = useState(false);
+    //Used in check to indicate exercise has a note and needs a note input
+    const [hasNote, sethasNote] = useState(false)
+
+    useEffect(() => {
+        csv()
+            .fromFile('../assets/raw/exercise_data.csv')
+            .on('json', jsonObj => {
+
+            })
+            .on('done', (error) => {
+                console.log('end');
+            })
+    }, []);
 
     useEffect(() => {
         if (dayData != null) {
@@ -22,8 +56,18 @@ const DayScreen = ({ navigation, route }) => {
         }
     }, [dayData]);
 
+    useEffect(() => {
+
+    }, [searchQuery]);
+
+    const onAddExercise = () => {
+
+    };
+
     return (
         <View>
+
+            {/* Exercise Detail Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -35,12 +79,64 @@ const DayScreen = ({ navigation, route }) => {
                 <View style={style.centeredView}>
                     <View style={style.modalView}>
                         <Text style={style.mediumText}>{modalDisplay}</Text>
-                        <TouchableOpacity style={style.closeButton} onPress={() => { setmodalVis(!modalVis) }}>
+                        <View style={style.buttonBox}>
+                            <TouchableOpacity style={style.closeButton} onPress={() => { setmodalVis(!modalVis) }}>
+                                <Text style={style.buttonText}>Close</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+                </View>
+            </Modal>
+
+            {/* Add Exercise Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={exModalVisible}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setmodalVis(!exModalVisible);
+                }}>
+                <View style={style.centeredView}>
+                    <View style={style.modalViewSearch}>
+                        <Searchbar
+                            style={style.searchBar}
+                            placeholder="Search for an Exercise"
+                            onChangeText={setsearchQuery()}
+                            value={searchQuery}
+                        />
+
+                        //displayed results of search
+                        <FlatList />
+
+                        <TouchableOpacity style={style.closeButton} onPress={() => { setexModalVisible(!exModalVisible) }}>
                             <Text style={style.buttonText}>Close</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
+
+            {/* Exercise Detail Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={exDetailVisible}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setexDetailVisisble(!exDetailVisible);
+                }}
+            >
+                <View style={style.centeredView}>
+                    <View style={style.modalViewSearch}>
+
+                        <TouchableOpacity style={style.closeButton} onPress={() => { setexModalVisible(!exModalVisible) }}>
+                            <Text style={style.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
 
             <FlatList
                 data={exercises}
@@ -71,6 +167,9 @@ const DayScreen = ({ navigation, route }) => {
                 style={style.exerciseList}
 
             />
+            <TouchableOpacity style={style.button} onPress={() => { setexModalVisible(true) }}>
+                <Text style={style.buttonText}>Add Exercises</Text>
+            </TouchableOpacity>
 
 
         </View>
@@ -80,6 +179,9 @@ const DayScreen = ({ navigation, route }) => {
 
 
 const style = StyleSheet.create({
+    searchBar: {
+        width: 300
+    },
     bigHeader: {
         fontSize: 30,
         fontFamily: 'nunito',
@@ -135,6 +237,23 @@ const style = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
+    }
+    , modalViewSearch: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 30,
+        paddingRight: 20,
+        paddingLeft: 20,
+        alignItems: 'center',
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
     },
     closeButton: {
         marginTop: 20,
@@ -147,9 +266,39 @@ const style = StyleSheet.create({
         fontSize: 20,
         fontFamily: 'nunito'
     },
+    button: {
+        marginTop: 20,
+        borderRadius: 30,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: "#5D4DE4"
+    },
     mediumText: {
         fontSize: 20,
         fontFamily: 'nunito'
+    },
+    dropdown: {
+        height: 50,
+        width: 200,
+        borderColor: '#5D4DE4',
+        backgroundColor: 'white',
+        borderWidth: 0.5,
+        borderRadius: 20,
+        paddingHorizontal: 8,
+        paddingLeft: 20
+    }, placeholderStyle: {
+        fontSize: 18,
+        fontFamily: 'nunito'
+    },
+    selectedTextStyle: {
+        fontSize: 18,
+        fontFamily: 'nunito',
+        color: '#5D4DE4'
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontFamily: 'nunito',
+        fontSize: 16,
     }
 });
 
