@@ -16,8 +16,8 @@ const DayScreen = ({ navigation, route }) => {
     const { day, dayData } = route.params;
     const [exercises, setexercises] = useState();
     const [modalVis, setmodalVis] = useState(false);
-    const [modalDisplay, setmodalDisplay] = useState("");
-    const [exModalVisible, setexModalVisible] = useState(true);
+    const [modalDisplay, setmodalDisplay] = useState();
+    const [exModalVisible, setexModalVisible] = useState(false);
 
     //For Exercise Search;
     const [searchQuery, setsearchQuery] = useState('');
@@ -30,33 +30,45 @@ const DayScreen = ({ navigation, route }) => {
         type: 'Compound Lift'
     }];
 
-    const [searchExercises, setdisplayExercises] = useState();
-
+    const [displayedExercises, setdisplayedExercises] = useState();
     //Exercise Detail State
-    const [exDetailVisible, setexDetailVisisble] = useState(flase);
+    const [exDetailVisible, setexDetailVisisble] = useState(false);
     //Used in check to indicate exercise is timed and needs a timed input
     const [isTimed, setisTimed] = useState(false);
     //Used in check to indicate exercise has a note and needs a note input
     const [hasNote, sethasNote] = useState(false)
+    //Currently selected exercise, in basic form (name, type)
+    const [selectedExercise, setselectedExercise] = useState();
 
-    useEffect(() => {
-        csv()
-            .fromFile('../assets/raw/exercise_data.csv')
-            .on('json', jsonObj => {
 
-            })
-            .on('done', (error) => {
-                console.log('end');
-            })
-    }, []);
+    // useEffect(() => {
+    //     csv()
+    //         .fromFile('../assets/raw/exercise_data.csv')
+    //         .on('json', jsonObj => {
+
+    //         })
+    //         .on('done', (error) => {
+    //             console.log('end');
+    //         })
+    // }, []);
 
     useEffect(() => {
         if (dayData != null) {
             setexercises(dayData);
-        }
-    }, [dayData]);
+        } ``
+    }, []);
 
+
+    // //Update the displayed exercises under the search bar
     useEffect(() => {
+        let newExercises = [];
+        exerciseList.forEach((exercise) => {
+            if (exercise.name.includes(searchQuery)) {
+                newExercises.push(exercise);
+            }
+        });
+
+        setdisplayedExercises(newExercises);
 
     }, [searchQuery]);
 
@@ -66,7 +78,6 @@ const DayScreen = ({ navigation, route }) => {
 
     return (
         <View>
-
             {/* Exercise Detail Modal */}
             <Modal
                 animationType="slide"
@@ -96,19 +107,30 @@ const DayScreen = ({ navigation, route }) => {
                 visible={exModalVisible}
                 onRequestClose={() => {
                     Alert.alert('Modal has been closed.');
-                    setmodalVis(!exModalVisible);
+                    setexModalVisible(!exModalVisible);
                 }}>
                 <View style={style.centeredView}>
                     <View style={style.modalViewSearch}>
                         <Searchbar
                             style={style.searchBar}
                             placeholder="Search for an Exercise"
-                            onChangeText={setsearchQuery()}
+                            onChangeText={() => { setsearchQuery() }}
                             value={searchQuery}
                         />
-
-                        //displayed results of search
-                        <FlatList />
+                        {/* Display filtered exercises */}
+                        <FlatList
+                            data={displayedExercises}
+                            renderItem={(exercise) => (
+                                <TouchableOpacity onPress={() => {
+                                    setselectedExercise(exercise);
+                                    setexModalVisible(false);
+                                    setexDetailVisisble(true);
+                                }}>
+                                    <Text>{exercise.name}</Text>
+                                    {/* TODO:  some sort of image rendered to difffer compound / isolation / cardio exercises */}
+                                </TouchableOpacity>
+                            )}
+                        />
 
                         <TouchableOpacity style={style.closeButton} onPress={() => { setexModalVisible(!exModalVisible) }}>
                             <Text style={style.buttonText}>Close</Text>
@@ -117,7 +139,7 @@ const DayScreen = ({ navigation, route }) => {
                 </View>
             </Modal>
 
-            {/* Exercise Detail Modal */}
+            {/* New Exercise Detail Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -130,7 +152,7 @@ const DayScreen = ({ navigation, route }) => {
                 <View style={style.centeredView}>
                     <View style={style.modalViewSearch}>
 
-                        <TouchableOpacity style={style.closeButton} onPress={() => { setexModalVisible(!exModalVisible) }}>
+                        <TouchableOpacity style={style.closeButton} onPress={() => { setexDetailVisisble(!exDetailVisible); }}>
                             <Text style={style.buttonText}>Close</Text>
                         </TouchableOpacity>
                     </View>
