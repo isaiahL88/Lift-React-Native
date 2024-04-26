@@ -1,0 +1,140 @@
+{
+    "exercises": [
+        {
+            "name": "Pull-Up",
+            "type": "compound lift"
+        },
+        {
+            "name": "Bench Press",
+            "type": "compound lift"
+        },
+        {
+            "name": "Incline Bench Press",
+            "type": "compound lift"
+        },
+        {
+            "name": "Squat",
+            "type": "compound lift"
+        },
+        {
+            "name": "Deadlift",
+            "type": "compound lift"
+        },
+        {
+            "name": "Farmer's Walk",
+            "type": "compound lift"
+        },
+        {
+            "name": "Bicep Curl",
+            "type": "isolation"
+        },
+        {
+            "name": "Romanian Deadlift",
+            "type": "isolation"
+        },
+        {
+            "name": "Preacher Curl",
+            "type": "isolation"
+        },
+        {
+            "name": "Skull Crushers",
+            "type": "isolation"
+        },
+        {
+            "name": "Goblet Squat",
+            "type": "isolation"
+        },
+        {
+            "name": "Chest Fly",
+            "type": "isolation"
+        },
+        {
+            "name": "Leg Extension",
+            "type": "isolation"
+        },
+        {
+            "name": "Leg Curl",
+            "type": "isolation"
+        },
+        {
+            "name": "Hip Thrust",
+            "type": "isolation"
+        },
+        {
+            "name": "Lateral Raise",
+            "type": "isolation"
+        },
+        {
+            "name": "Front Raise",
+            "type": "isolation"
+        },
+        {
+            "name": "Rear Delt raise",
+            "type": "isolation"
+        },
+        {
+            "name": "Rear Delt Fly",
+            "type": "isolation"
+        },
+        {
+            "name": "Face Pull",
+            "type": "isolation"
+        },
+        {
+            "name": "Barbell Row",
+            "type": "isolation"
+        },
+        {
+            "name": "Dumbell Row",
+            "type": "isolation"
+        },
+        {
+            "name": "Seated Row",
+            "type": "isolation"
+        },
+        {
+            "name": "Seated Machine Row",
+            "type": "isolation"
+        },
+        {
+            "name": "Lat Pull-down machine",
+            "type": "isolation"
+        },
+        {
+            "name": "Lat Pullovers",
+            "type": "isolation"
+        },
+        {
+            "name": "Wrist Curls",
+            "type": "isolation"
+        },
+        {
+            "name": "Hammer Curl",
+            "type": "isolation"
+        },
+        {
+            "name": "Reverse Barbell Curl",
+            "type": "isolation"
+        },
+        {
+            "name": "Jumping Jacks",
+            "type": "cardio"
+        },
+        {
+            "name": "Skip Rope",
+            "type": "cardio"
+        },
+        {
+            "name": "Treadmill",
+            "type": "cardio"
+        },
+        {
+            "name": "Stair Master",
+            "type": "cardio"
+        },
+        {
+            "name": "Burpees",
+            "type": "cardio"
+        }
+    ]
+}

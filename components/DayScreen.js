@@ -1,7 +1,7 @@
 import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList } from "react-native";
 import { useEffect, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
-import csv from 'csvtojson';
+import exerciseJson from '../assets/raw/exercise_data.json';
 
 
 /*
@@ -13,26 +13,28 @@ import csv from 'csvtojson';
       of simplicity
 */
 const DayScreen = ({ navigation, route }) => {
+    //Used to see if the dayScreen is in edit mode or in view mode
+    const [editMode, seteditMode] = useState();
     const { day, dayData } = route.params;
     const [exercises, setexercises] = useState();
+
+    //Exercise Detail modal
     const [modalVis, setmodalVis] = useState(false);
     const [modalDisplay, setmodalDisplay] = useState();
+
+    //ADd Exercise Modal
     const [exModalVisible, setexModalVisible] = useState(false);
 
-    //For Exercise Search;
-    const [searchQuery, setsearchQuery] = useState('');
-    const exerciseList = [{
-        name: 'Squat',
-        type: 'Compound Lift'
-    },
-    {
-        name: 'Bench',
-        type: 'Compound Lift'
-    }];
-
-    const [displayedExercises, setdisplayedExercises] = useState();
-    //Exercise Detail State
+    //Add Execise Detail modal
     const [exDetailVisible, setexDetailVisisble] = useState(false);
+
+    //For Add Exercise Search Query
+    const [searchQuery, setsearchQuery] = useState("");
+    let exerciseList = exerciseJson.exercises;
+
+    //Displayed exercises under search
+    const [displayedExercises, setdisplayedExercises] = useState(exerciseList);
+
     //Used in check to indicate exercise is timed and needs a timed input
     const [isTimed, setisTimed] = useState(false);
     //Used in check to indicate exercise has a note and needs a note input
@@ -41,41 +43,36 @@ const DayScreen = ({ navigation, route }) => {
     const [selectedExercise, setselectedExercise] = useState();
 
 
-    // useEffect(() => {
-    //     csv()
-    //         .fromFile('../assets/raw/exercise_data.csv')
-    //         .on('json', jsonObj => {
-
-    //         })
-    //         .on('done', (error) => {
-    //             console.log('end');
-    //         })
-    // }, []);
-
     useEffect(() => {
         if (dayData != null) {
             setexercises(dayData);
-        } ``
-    }, []);
+        }
+    }, [dayData]);
 
 
     // //Update the displayed exercises under the search bar
     useEffect(() => {
-        let newExercises = [];
-        exerciseList.forEach((exercise) => {
-            if (exercise.name.includes(searchQuery)) {
-                newExercises.push(exercise);
-            }
+        const updateData = exerciseList.filter((item) => {
+            const nameString = item.name.toLowerCase();
+            return nameString.includes(searchQuery.toLowerCase());
         });
 
-        setdisplayedExercises(newExercises);
+        console.log("NEW DATA");
+        updateData.forEach(item => {
+            console.log(item.name);
+        })
 
+        setdisplayedExercises(updateData);
     }, [searchQuery]);
 
     const onAddExercise = () => {
 
     };
 
+    const updateSearch = (search) => {
+        setsearchQuery(search);
+    }
+    const renderItem = ({ item }) => <Item title={item.title} />;
     return (
         <View>
             {/* Exercise Detail Modal */}
@@ -114,19 +111,17 @@ const DayScreen = ({ navigation, route }) => {
                         <Searchbar
                             style={style.searchBar}
                             placeholder="Search for an Exercise"
-                            onChangeText={() => { setsearchQuery() }}
+                            onChangeText={updateSearch}
                             value={searchQuery}
                         />
                         {/* Display filtered exercises */}
                         <FlatList
                             data={displayedExercises}
-                            renderItem={(exercise) => (
-                                <TouchableOpacity onPress={() => {
-                                    setselectedExercise(exercise);
-                                    setexModalVisible(false);
-                                    setexDetailVisisble(true);
+                            renderItem={({ item }) => (
+                                <TouchableOpacity style={style.searchItemBox} onPress={() => {
+                                    console.log("DEBUG: " + item.name);
                                 }}>
-                                    <Text>{exercise.name}</Text>
+                                    <Text style={style.searchItem} >{item.name}</Text>
                                     {/* TODO:  some sort of image rendered to difffer compound / isolation / cardio exercises */}
                                 </TouchableOpacity>
                             )}
@@ -189,7 +184,7 @@ const DayScreen = ({ navigation, route }) => {
                 style={style.exerciseList}
 
             />
-            <TouchableOpacity style={style.button} onPress={() => { setexModalVisible(true) }}>
+            <TouchableOpacity style={style.button} onPress={() => { setexModalVisible(true); }}>
                 <Text style={style.buttonText}>Add Exercises</Text>
             </TouchableOpacity>
 
@@ -201,6 +196,18 @@ const DayScreen = ({ navigation, route }) => {
 
 
 const style = StyleSheet.create({
+    searchItem: {
+        fontSize: 20,
+        fontFamily: 'nunito',
+        padding: 5
+    },
+    searchItemBox: {
+        backgroundColor: '#e3e1fa',
+        borderWidth: 1,
+        borderRadius: 10,
+        margin: 5,
+        opacity: .8
+    },
     searchBar: {
         width: 300
     },
@@ -262,6 +269,8 @@ const style = StyleSheet.create({
     }
     , modalViewSearch: {
         margin: 20,
+        marginTop: 70,
+        marginBottom: 70,
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 30,
