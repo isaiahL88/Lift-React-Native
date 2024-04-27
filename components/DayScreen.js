@@ -1,7 +1,9 @@
-import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList } from "react-native";
+import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch } from "react-native";
 import { useEffect, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 import exerciseJson from '../assets/raw/exercise_data.json';
+import { Picker } from "@react-native-picker/picker";
+
 
 
 /*
@@ -13,6 +15,13 @@ import exerciseJson from '../assets/raw/exercise_data.json';
       of simplicity
 */
 const DayScreen = ({ navigation, route }) => {
+    const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const numItems = 50; // Number of items you want to create
+    const pickerItems = [];
+    for (let i = 0; i < numItems; i++) {
+        pickerItems.push(<Picker.Item label={i} value={i} />);
+    }
+
     //Used to see if the dayScreen is in edit mode or in view mode
     const [editMode, seteditMode] = useState();
     const { day, dayData } = route.params;
@@ -40,7 +49,13 @@ const DayScreen = ({ navigation, route }) => {
     //Used in check to indicate exercise has a note and needs a note input
     const [hasNote, sethasNote] = useState(false)
     //Currently selected exercise, in basic form (name, type)
-    const [selectedExercise, setselectedExercise] = useState();
+    const [selectedExercise, setselectedExercise] = useState({ name: "exercise", type: "none" });
+
+    //Picker state
+    const [pickerVal1, setpickerVal1] = useState();
+    const [pickerVal2, setpickerVal2] = useState();
+    const [pickerVal3, setpickerVal3] = useState();
+
 
 
     useEffect(() => {
@@ -119,7 +134,9 @@ const DayScreen = ({ navigation, route }) => {
                             data={displayedExercises}
                             renderItem={({ item }) => (
                                 <TouchableOpacity style={style.searchItemBox} onPress={() => {
-                                    console.log("DEBUG: " + item.name);
+                                    setselectedExercise(item);
+                                    setexModalVisible(false);
+                                    setexDetailVisisble(true);
                                 }}>
                                     <Text style={style.searchItem} >{item.name}</Text>
                                     {/* TODO:  some sort of image rendered to difffer compound / isolation / cardio exercises */}
@@ -127,7 +144,7 @@ const DayScreen = ({ navigation, route }) => {
                             )}
                         />
 
-                        <TouchableOpacity style={style.closeButton} onPress={() => { setexModalVisible(!exModalVisible) }}>
+                        <TouchableOpacity style={style.closeButton} onPress={() => { setexModalVisible(!exModalVisible); setsearchQuery(""); }}>
                             <Text style={style.buttonText}>Close</Text>
                         </TouchableOpacity>
                     </View>
@@ -145,8 +162,61 @@ const DayScreen = ({ navigation, route }) => {
                 }}
             >
                 <View style={style.centeredView}>
-                    <View style={style.modalViewSearch}>
+                    <View style={style.modalViewAddDetails}>
+                        <Text style={style.largeText}>{selectedExercise.name}</Text>
+                        <Text style={style.detailText}>{selectedExercise.type}</Text>
+                        <View style={style.switchBox}>
+                            <Text>Set Note</Text>
+                            <Switch
+                                trackColor={{ false: '#767577', true: '#767577' }}
+                                thumbColor={hasNote ? '#5D4DE4' : '#f4f3f4'}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={() => {
+                                    sethasNote(!hasNote);
+                                    if (hasNote) { setisTimed(false); }
+                                }}
+                                value={hasNote}
+                            />
+                            <Text>Set Time</Text>
+                            <Switch
+                                trackColor={{ false: '#767577', true: '#767577' }}
+                                thumbColor={isTimed ? '#5D4DE4' : '#f4f3f4'}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={() => {
+                                    setisTimed(!isTimed);
+                                    if (isTimed) { sethasNote(false); }
+                                }}
+                                value={isTimed}
+                            />
+                        </View>
 
+                        {isTimed ?
+                            <View style={style.pickerBox}>
+                                <Text style={style.largeText}>Reps:</Text>
+                                <Picker
+                                    style={style.picker}
+                                    selectedValue={pickerVal1}
+                                    onValueChange={(itemValue) => setpickerVal1(itemValue)}
+                                >
+                                    {pickerItems}
+                                </Picker>
+                                <Text style={style.largeText}>Sets:</Text>
+                                <Picker
+                                    style={style.picker}
+                                    selectedValue={pickerVal1}
+                                    onValueChange={(itemValue) => setpickerVal1(itemValue)}
+                                >
+                                    {pickerItems}
+                                </Picker>
+                                {/* <Picker style={style.picker} /> */}
+                                {/* <Picker style={style.picker} /> */}
+                            </View>
+                            :
+                            hasNote ?
+                                <Text>Note</Text>
+                                :
+                                <Text>Rep and set</Text>
+                        }
                         <TouchableOpacity style={style.closeButton} onPress={() => { setexDetailVisisble(!exDetailVisible); }}>
                             <Text style={style.buttonText}>Close</Text>
                         </TouchableOpacity>
@@ -196,6 +266,19 @@ const DayScreen = ({ navigation, route }) => {
 
 
 const style = StyleSheet.create({
+    picker: {
+        height: 50,
+        width: 100,
+        marginBottom: 150,
+    },
+    pickerBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 50
+    },
+    switchBox: {
+        flexDirection: 'row',
+    },
     searchItem: {
         fontSize: 20,
         fontFamily: 'nunito',
@@ -286,6 +369,23 @@ const style = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    modalViewAddDetails: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 30,
+        width: '85%',
+        paddingBottom: 100,
+        alignItems: 'center',
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
     closeButton: {
         marginTop: 20,
         borderRadius: 30,
@@ -304,9 +404,18 @@ const style = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#5D4DE4"
     },
+    largeText: {
+        fontSize: 30,
+        fontFamily: 'nunito'
+    },
     mediumText: {
         fontSize: 20,
         fontFamily: 'nunito'
+    },
+    detailText: {
+        fontSize: 15,
+        fontFamily: 'nunito',
+        opacity: 0.8
     },
     dropdown: {
         height: 50,
