@@ -1,4 +1,4 @@
-import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch } from "react-native";
+import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch, TextInput } from "react-native";
 import { useEffect, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 import exerciseJson from '../assets/raw/exercise_data.json';
@@ -192,7 +192,7 @@ const DayScreen = ({ navigation, route }) => {
 
                         {isTimed ?
                             <View style={style.pickerBox}>
-                                <Text style={style.largeText}>Reps:</Text>
+                                <Text style={style.largeText}>Time:</Text>
                                 <Picker
                                     style={style.picker}
                                     selectedValue={pickerVal1}
@@ -200,30 +200,71 @@ const DayScreen = ({ navigation, route }) => {
                                 >
                                     {pickerItems}
                                 </Picker>
-                                <Text style={style.largeText}>Sets:</Text>
                                 <Picker
-                                    style={style.picker}
-                                    selectedValue={pickerVal1}
-                                    onValueChange={(itemValue) => setpickerVal1(itemValue)}
+                                    style={style.pickerLong}
+                                    selectedValue={pickerVal2}
+                                    onValueChange={(itemValue) => setpickerVal2(itemValue)}
                                 >
-                                    {pickerItems}
+                                    <Picker.item label="s" value="s" />
+                                    <Picker.item label="mins" value="m" />
+                                    <Picker.item label="hours" value="h" />
                                 </Picker>
                                 {/* <Picker style={style.picker} /> */}
                                 {/* <Picker style={style.picker} /> */}
                             </View>
                             :
                             hasNote ?
-                                <Text>Note</Text>
+                                <View>
+                                    <TextInput />
+                                </View>
                                 :
-                                <Text>Rep and set</Text>
+                                <View style={style.pickerBox}>
+                                    <Text style={style.largeText}>Reps:</Text>
+                                    <Picker
+                                        style={style.picker}
+                                        selectedValue={pickerVal1}
+                                        onValueChange={(itemValue) => setpickerVal1(itemValue)}
+                                    >
+                                        {pickerItems}
+                                    </Picker>
+                                    <Text style={style.largeText}>Sets:</Text>
+                                    <Picker
+                                        style={style.picker}
+                                        selectedValue={pickerVal2}
+                                        onValueChange={(itemValue) => setpickerVal2(itemValue)}
+                                    >
+                                        {pickerItems}
+                                    </Picker>
+                                    {/* <Picker style={style.picker} /> */}
+                                    {/* <Picker style={style.picker} /> */}
+                                </View>
                         }
-                        <TouchableOpacity style={style.closeButton} onPress={() => { setexDetailVisisble(!exDetailVisible); }}>
-                            <Text style={style.buttonText}>Close</Text>
-                        </TouchableOpacity>
+                        <View style={style.buttonBox}>
+                            <TouchableOpacity style={style.closeButton} onPress={() => { setexDetailVisisble(!exDetailVisible); }}>
+                                <Text style={style.buttonText}>Close</Text>
+                            </TouchableOpacity>
+                            {/* Here is where we create the new exercise object and add it to the current exercises */}
+                            {/* User still has to save the routine to cemete these changes in the db */}
+                            <TouchableOpacity style={style.closeButton} onPress={() => {
+                                setexercises([...exercises,
+                                {
+                                    name: selectedExercise.name,
+                                    muscleTarget: selectedExercise.type,
+                                    hasNote: hasNote,
+                                    isTimed: isTimed,
+                                    reps: pickerVal1,
+                                    sets: pickerVal2,
+                                    time: pickerVal1,
+                                    timeUnit: pickerVal2
+                                }]);
+                            }}>
+                                <Text style={style.buttonText}>Add</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </Modal>
-
+            </Modal >
+            s
 
             <FlatList
                 data={exercises}
@@ -259,17 +300,27 @@ const DayScreen = ({ navigation, route }) => {
             </TouchableOpacity>
 
 
-        </View>
+        </View >
 
     )
 }
 
 
 const style = StyleSheet.create({
+    buttonBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        width: '85%'
+    },
     picker: {
         height: 50,
         width: 100,
         marginBottom: 150,
+    },
+    pickerLong: {
+        height: 50,
+        width: 150,
+        marginBottom: 150
     },
     pickerBox: {
         flexDirection: 'row',
