@@ -46,8 +46,12 @@ const DayScreen = ({ navigation, route }) => {
 
     //Used in check to indicate exercise is timed and needs a timed input
     const [isTimed, setisTimed] = useState(false);
+
     //Used in check to indicate exercise has a note and needs a note input
     const [hasNote, sethasNote] = useState(false)
+    //Note state
+    const [note, setnote] = useState();
+
     //Currently selected exercise, in basic form (name, type)
     const [selectedExercise, setselectedExercise] = useState({ name: "exercise", type: "none" });
 
@@ -125,7 +129,7 @@ const DayScreen = ({ navigation, route }) => {
                     <View style={style.modalViewSearch}>
                         <Searchbar
                             style={style.searchBar}
-                            placeholder="Search for an Exercise"
+                            placeholder={"Search for an Exercise"}
                             onChangeText={updateSearch}
                             value={searchQuery}
                         />
@@ -215,7 +219,13 @@ const DayScreen = ({ navigation, route }) => {
                             :
                             hasNote ?
                                 <View>
-                                    <TextInput />
+                                    <TextInput
+                                        value={note}
+                                        style={style.inputStyle}
+                                        placeholder="Enter Note"
+                                        onChangeText={text => setnote(text)}
+                                        multiline={true}
+                                    />
                                 </View>
                                 :
                                 <View style={style.pickerBox}>
@@ -264,7 +274,7 @@ const DayScreen = ({ navigation, route }) => {
                     </View>
                 </View>
             </Modal >
-            s
+
 
             <FlatList
                 data={exercises}
@@ -307,6 +317,20 @@ const DayScreen = ({ navigation, route }) => {
 
 
 const style = StyleSheet.create({
+    inputStyle: {
+        marginTop: 20,
+        width: 320,
+        height: 200,
+        textAlign: 'left',
+        backgroundColor: "#FFFFFF00",
+        borderWidth: 1,
+        borderColor: "#6F7285",
+        margin: 10,
+        borderRadius: 10,
+        padding: 5,
+        fontSize: 25,
+        fontFamily: 'nunito',
+    },
     buttonBox: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
@@ -426,7 +450,7 @@ const style = StyleSheet.create({
         borderRadius: 20,
         padding: 30,
         width: '85%',
-        paddingBottom: 100,
+        paddingBottom: 30,
         alignItems: 'center',
         shadowColor: '#000000',
         shadowOffset: {
