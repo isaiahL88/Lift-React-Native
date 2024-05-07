@@ -1,9 +1,9 @@
-import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch, TextInput } from "react-native";
+import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch, TextInput, Keyboard } from "react-native";
 import { useEffect, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 import exerciseJson from '../assets/raw/exercise_data.json';
 import { Picker } from "@react-native-picker/picker";
-
+import dismissKeyb from 'react-native-dismiss-keyboard';
 
 
 /*
@@ -104,8 +104,13 @@ const DayScreen = ({ navigation, route }) => {
     const updateSearch = (search) => {
         setsearchQuery(search);
     }
+
+    const dismissKeyboard = () => {
+        dismissKeyb();
+        console.log("keybaord");
+    }
     return (
-        <View>
+        <View style={style.page}>
             {/* Exercise Detail Modal */}
             <Modal
                 animationType="slide"
@@ -189,6 +194,9 @@ const DayScreen = ({ navigation, route }) => {
                                     thumbColor={hasNote ? '#5D4DE4' : '#f4f3f4'}
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => {
+                                        if (!hasNote) {
+                                            setisTimed(false);
+                                        }
                                         sethasNote(!hasNote);
                                     }}
                                     value={hasNote}
@@ -201,6 +209,9 @@ const DayScreen = ({ navigation, route }) => {
                                     thumbColor={isTimed ? '#5D4DE4' : '#f4f3f4'}
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => {
+                                        if (!isTimed) {
+                                            sethasNote(false);
+                                        }
                                         setisTimed(!isTimed);
                                     }}
                                     value={isTimed}
@@ -239,6 +250,7 @@ const DayScreen = ({ navigation, route }) => {
                                         placeholder="Enter Note"
                                         onChangeText={text => setnote(text)}
                                         multiline={true}
+                                        blurOnSubmit={true}
                                     />
                                 </View>
                                 :
@@ -264,7 +276,12 @@ const DayScreen = ({ navigation, route }) => {
                                 </View>
                         }
                         <View style={style.buttonBox}>
-                            <TouchableOpacity style={style.closeButton} onPress={() => { setexDetailVisisble(!exDetailVisible); }}>
+                            <TouchableOpacity style={style.closeButton} onPress={() => {
+                                setexDetailVisisble(!exDetailVisible);
+                                setisTimed(false);
+                                sethasNote(false);
+                                setnote();
+                            }}>
                                 <Text style={style.buttonText}>Close</Text>
                             </TouchableOpacity>
                             {/* Here is where we create the new exercise object and add it to the current exercises */}
@@ -337,6 +354,9 @@ const DayScreen = ({ navigation, route }) => {
 
 
 const style = StyleSheet.create({
+    page: {
+        alignItems: 'center'
+    },
     inputStyle: {
         marginTop: 20,
         width: 320,
@@ -407,7 +427,7 @@ const style = StyleSheet.create({
         marginBottom: 10
     },
     exercise: {
-        width: "100%",
+        width: "97%",
         borderWidth: 1,
         borderColor: '#000000',
         borderRadius: 45,
@@ -506,8 +526,10 @@ const style = StyleSheet.create({
         marginTop: 20,
         borderRadius: 30,
         padding: 10,
+        width: 250,
         borderWidth: 1,
-        borderColor: "#5D4DE4"
+        borderColor: "#5D4DE4",
+        alignItems: 'center'
     },
     largeText: {
         fontSize: 30,
