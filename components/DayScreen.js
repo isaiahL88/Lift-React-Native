@@ -29,6 +29,7 @@ const DayScreen = ({ navigation, route }) => {
 
     //Exercise Detail modal
     const [modalVis, setmodalVis] = useState(false);
+    const [modalTitle, setmodalTitle] = useState();
     const [modalDisplay, setmodalDisplay] = useState();
 
     //ADd Exercise Modal
@@ -84,6 +85,18 @@ const DayScreen = ({ navigation, route }) => {
         setdisplayedExercises(updateData);
     }, [searchQuery]);
 
+    useEffect(() => {
+        if (hasNote) {
+            setisTimed(false);
+        }
+    }, hasNote)
+
+    useEffect(() => {
+        if (isTimed) {
+            sethasNote(false);
+        }
+    }, isTimed)
+
     const onAddExercise = () => {
 
     };
@@ -91,7 +104,6 @@ const DayScreen = ({ navigation, route }) => {
     const updateSearch = (search) => {
         setsearchQuery(search);
     }
-    const renderItem = ({ item }) => <Item title={item.title} />;
     return (
         <View>
             {/* Exercise Detail Modal */}
@@ -105,12 +117,12 @@ const DayScreen = ({ navigation, route }) => {
                 }}>
                 <View style={style.centeredView}>
                     <View style={style.modalView}>
+                        <Text style={style.largeText}>{modalTitle}</Text>
                         <Text style={style.mediumText}>{modalDisplay}</Text>
-                        <View style={style.buttonBox}>
-                            <TouchableOpacity style={style.closeButton} onPress={() => { setmodalVis(!modalVis) }}>
-                                <Text style={style.buttonText}>Close</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity style={style.closeButton} onPress={() => { setmodalVis(!modalVis) }}>
+                            <Text style={style.buttonText}>Close</Text>
+                        </TouchableOpacity>
+
 
                     </View>
                 </View>
@@ -169,29 +181,31 @@ const DayScreen = ({ navigation, route }) => {
                     <View style={style.modalViewAddDetails}>
                         <Text style={style.largeText}>{selectedExercise.name}</Text>
                         <Text style={style.detailText}>{selectedExercise.type}</Text>
-                        <View style={style.switchBox}>
-                            <Text>Set Note</Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#767577' }}
-                                thumbColor={hasNote ? '#5D4DE4' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => {
-                                    sethasNote(!hasNote);
-                                    if (hasNote) { setisTimed(false); }
-                                }}
-                                value={hasNote}
-                            />
-                            <Text>Set Time</Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#767577' }}
-                                thumbColor={isTimed ? '#5D4DE4' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => {
-                                    setisTimed(!isTimed);
-                                    if (isTimed) { sethasNote(false); }
-                                }}
-                                value={isTimed}
-                            />
+                        <View style={style.switchesBox}>
+                            <View style={style.switchBox} >
+                                <Text style={style.switchTitle}>Set Note</Text>
+                                <Switch
+                                    trackColor={{ false: '#767577', true: '#767577' }}
+                                    thumbColor={hasNote ? '#5D4DE4' : '#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={() => {
+                                        sethasNote(!hasNote);
+                                    }}
+                                    value={hasNote}
+                                />
+                            </View>
+                            <View style={style.switchBox} >
+                                <Text style={style.switchTitle}>Set Time</Text>
+                                <Switch
+                                    trackColor={{ false: '#767577', true: '#767577' }}
+                                    thumbColor={isTimed ? '#5D4DE4' : '#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={() => {
+                                        setisTimed(!isTimed);
+                                    }}
+                                    value={isTimed}
+                                />
+                            </View>
                         </View>
 
                         {isTimed ?
@@ -259,6 +273,7 @@ const DayScreen = ({ navigation, route }) => {
                                 setexercises([...exercises,
                                 {
                                     name: selectedExercise.name,
+                                    note: note,
                                     muscleTarget: selectedExercise.type,
                                     hasNote: hasNote,
                                     isTimed: isTimed,
@@ -267,13 +282,18 @@ const DayScreen = ({ navigation, route }) => {
                                     time: pickerVal1,
                                     timeUnit: pickerVal2
                                 }]);
+
+                                //reset modal
+                                setexDetailVisisble(!exDetailVisible);
+                                sethasNote(false);
+                                setisTimed(false);
                             }}>
                                 <Text style={style.buttonText}>Add</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
-            </Modal >
+            </Modal>
 
 
             <FlatList
@@ -281,21 +301,21 @@ const DayScreen = ({ navigation, route }) => {
                 renderItem={({ item }) => {
                     if (item.hasNote) {
                         return (
-                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.note); setmodalVis(!modalVis); }}>
+                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.note); setmodalTitle(item.name); setmodalVis(!modalVis); }}>
                                 <Text style={style.exerciseText}>{item.name}</Text>
                                 <Text numberOfLines={1} style={style.exerciseDescrNote}>{item.note}</Text>
                             </TouchableOpacity>
                         )
                     } else if (item.timed) {
                         return (
-                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.time + " " + item.timeUnit); setmodalVis(!modalVis) }}>
+                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.time + " " + item.timeUnit); setmodalTitle(item.name); setmodalVis(!modalVis) }}>
                                 <Text style={style.exerciseText}>{item.name}</Text>
                                 <Text numberOfLines={1} style={style.exerciseDescr}>{item.time} {item.timeUnit}</Text>
                             </TouchableOpacity>
                         )
                     } else {
                         return (
-                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.sets + " x " + item.reps); setmodalVis(!modalVis) }}>
+                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.sets + " x " + item.reps); setmodalTitle(item.name); setmodalVis(!modalVis) }}>
                                 <Text style={style.exerciseText}>{item.name}</Text>
                                 <Text numberOfLines={1} style={style.exerciseDescr}>{item.sets} sets x {item.reps} reps</Text>
                             </TouchableOpacity>
@@ -351,8 +371,18 @@ const style = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 50
     },
+    switchTitle: {
+        marginRight: 10
+    },
+    switchesBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 5,
+    },
     switchBox: {
         flexDirection: 'row',
+        alignItems: 'center',
+        padding: 5,
     },
     searchItem: {
         fontSize: 20,
