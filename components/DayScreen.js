@@ -1,9 +1,14 @@
-import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch, TextInput, Keyboard } from "react-native";
+import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch, TextInput, Image } from "react-native";
 import { useEffect, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 import exerciseJson from '../assets/raw/exercise_data.json';
 import { Picker } from "@react-native-picker/picker";
 import dismissKeyb from 'react-native-dismiss-keyboard';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+
+
 
 
 /*
@@ -23,8 +28,11 @@ const DayScreen = ({ navigation, route }) => {
     }
 
     //Used to see if the dayScreen is in edit mode or in view mode
-    const [editMode, seteditMode] = useState();
-    const { day, dayData } = route.params;
+    const [editMode, seteditMode] = useState(true);
+    //Did the user stage any changes to this routine
+    const [staged, setstaged] = useState(false)
+
+    const { day, dayData, context } = route.params;
     const [exercises, setexercises] = useState();
 
     //Exercise Detail modal
@@ -276,14 +284,6 @@ const DayScreen = ({ navigation, route }) => {
                                 </View>
                         }
                         <View style={style.buttonBox}>
-                            <TouchableOpacity style={style.closeButton} onPress={() => {
-                                setexDetailVisisble(!exDetailVisible);
-                                setisTimed(false);
-                                sethasNote(false);
-                                setnote();
-                            }}>
-                                <Text style={style.buttonText}>Close</Text>
-                            </TouchableOpacity>
                             {/* Here is where we create the new exercise object and add it to the current exercises */}
                             {/* User still has to save the routine to cemete these changes in the db */}
                             <TouchableOpacity style={style.closeButton} onPress={() => {
@@ -304,9 +304,22 @@ const DayScreen = ({ navigation, route }) => {
                                 setexDetailVisisble(!exDetailVisible);
                                 sethasNote(false);
                                 setisTimed(false);
+
+                                //set staged for save button
+                                setstaged(true);
                             }}>
                                 <Text style={style.buttonText}>Add</Text>
                             </TouchableOpacity>
+
+                            <TouchableOpacity style={style.closeButton} onPress={() => {
+                                setexDetailVisisble(!exDetailVisible);
+                                setisTimed(false);
+                                sethasNote(false);
+                                setnote();
+                            }}>
+                                <Text style={style.buttonText}>Close</Text>
+                            </TouchableOpacity>
+
                         </View>
                     </View>
                 </View>
@@ -342,9 +355,33 @@ const DayScreen = ({ navigation, route }) => {
                 style={style.exerciseList}
 
             />
-            <TouchableOpacity style={style.button} onPress={() => { setexModalVisible(true); }}>
-                <Text style={style.buttonText}>Add Exercises</Text>
-            </TouchableOpacity>
+            {editMode ?
+                <TouchableOpacity style={style.button} onPress={() => { setexModalVisible(true); }}>
+                    <Text style={style.buttonText}>Add Exercises</Text>
+                </TouchableOpacity>
+                :
+                <>
+                </>
+            }
+
+            {staged ?
+                <TouchableOpacity style={style.buttonSmall}>
+                    <Text style={style.buttonSmallText}>Save</Text>
+                </TouchableOpacity>
+                :
+                <>
+                </>
+            }
+
+            {context === "browse" ?
+                <TouchableOpacity onPress={() => {
+                    seteditMode(true);
+                }}>
+                    <Icon name={editMode ? "cancel" : "square-edit-outline"} size={30} color="#900"></Icon>
+                </TouchableOpacity>
+                :
+                <></>
+            }
 
 
         </View >
@@ -355,7 +392,8 @@ const DayScreen = ({ navigation, route }) => {
 
 const style = StyleSheet.create({
     page: {
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: '#F8F8FF'
     },
     inputStyle: {
         marginTop: 20,
@@ -374,7 +412,7 @@ const style = StyleSheet.create({
     buttonBox: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        width: '85%'
+        width: '100%'
     },
     picker: {
         height: 50,
@@ -515,6 +553,8 @@ const style = StyleSheet.create({
         marginTop: 20,
         borderRadius: 30,
         padding: 10,
+        width: 100,
+        alignItems: 'center',
         borderWidth: 1,
         borderColor: "#5D4DE4"
     },
@@ -523,13 +563,28 @@ const style = StyleSheet.create({
         fontFamily: 'nunito'
     },
     button: {
-        marginTop: 20,
+        marginTop: 5,
         borderRadius: 30,
         padding: 10,
         width: 250,
         borderWidth: 1,
         borderColor: "#5D4DE4",
         alignItems: 'center'
+    },
+    buttonSmallText: {
+        fontSize: 13,
+        fontFamily: 'nunito'
+    },
+    buttonSmall: {
+        borderRadius: 30,
+        width: 60,
+        height: 30,
+        margin: 10,
+        borderWidth: 1,
+        borderColor: "#5D4DE4",
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'flex-end'
     },
     largeText: {
         fontSize: 30,

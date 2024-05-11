@@ -10,7 +10,7 @@ const Tab = createMaterialTopTabNavigator();
     todo: add the routine name somewhere, hopefully above the top navigation like android
 */
 const RoutineBrowse = ({ route, navigation }) => {
-    const { routine } = route.params;
+    const { routine, context } = route.params;
     //Each day in the routine
     //Note each day will be maped to a RoutineDay component
     const [user, setuser] = useState();
@@ -30,18 +30,47 @@ const RoutineBrowse = ({ route, navigation }) => {
     }, [user]);
 
     function updateRoutineData() {
-        setSplitDays(routine["splitDays"]);
-        setDays(routine["days"]);
+
+        if (context === "browse") {
+            setSplitDays(routine["splitDays"]);
+            setDays(routine["days"]);
+        } else if (context === "creation") {
+
+        }
+    }
+
+    /*  
+        This function will get the exercises from each DayScreen and upload the routine into the db
+
+        NOte: the routine may be called from a creation context or even an update context
+    */
+    function uploadRoutine() {
+        const userRoutinesRef = collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines");
+        const querySnapshot = getDocs(userRoutinesRef);
+        (await querySnapshot).forEach(doc => {
+            const data = doc.data();
+
+            setRoutines(prevState => {
+                return [...prevState, data];
+            });
+
+        })
     }
 
 
     if (days == null || splitDays == null) {
         return (
-            <Tab.Navigator>
+            <Tab.Navigator
+                tabBarOptions={{
+                    activeTintColor: '#5D4DE4',
+                    indicatorStyle: {
+                        backgroundColor: '#5D4DE4',
+                    }
+                }}>
                 <Tab.Screen
                     name="Empty"
                     component={Text} />
-            </Tab.Navigator>
+            </Tab.Navigator >
         )
     } else {
         return (
@@ -59,7 +88,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                             days.map((day) => (
                                 // maps days to screens in the tab navigator
                                 // day is just the title and dayData is an array of exercies taken from split days
-                                <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day] }} />
+                                <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse" }} />
                             ))
                             :
                             <Text>Loading</Text>
