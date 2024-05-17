@@ -38,9 +38,16 @@ const RoutineBrowse = ({ route, navigation }) => {
     }, [splitDays])
 
     const updateSplitData = (day, exercises) => {
-        let newMap = new Map(splitDays);
+        const newMap = new Map();
         newMap.set(day, exercises);
-        setSplitDays(newMap);
+        if (splitDays != null) {
+            for (var i in splitDays) {
+                newMap.set(i, splitDays[i]);
+            }
+            setSplitDays(newMap);
+        }
+
+
     }
 
     function updateRoutineData() {
@@ -126,16 +133,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                             <Text>Loading</Text>
                     }
                 </Tab.Navigator>
-                {
-                    splitDays != null && splitDays.size >= 1 ?
 
-                        splitDays.keys().map((name) => (
-                            <Text>name</Text>
-                        ))
-                        :
-                        <>
-                        </>
-                }
             </>
 
         )

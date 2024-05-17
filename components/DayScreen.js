@@ -101,8 +101,12 @@ const DayScreen = ({ navigation, route }) => {
     }, [isTimed])
 
     useEffect(() => {
-        updateSplit(day, exercises);
-        console.log("split days updated");
+
+        if (exercises != null && exercises.length >= 1) {
+            updateSplit(day, exercises);
+            console.log("split days updated");
+        }
+
     }, [exercises]);
 
     const onAddExercise = () => {
