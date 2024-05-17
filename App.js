@@ -2,7 +2,6 @@ import Home from "./components/Home";
 import { useState, useEffect } from "react";
 import { TextInput, Text, Image, View, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from "react-native"
 import { NavigationContainer } from '@react-navigation/native'
-
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from './firebaseConfig.js'
 import { useFonts } from 'expo-font';

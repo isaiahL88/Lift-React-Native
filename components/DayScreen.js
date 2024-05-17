@@ -32,7 +32,7 @@ const DayScreen = ({ navigation, route }) => {
     //Did the user stage any changes to this routine
     const [staged, setstaged] = useState(false)
 
-    const { day, dayData, context } = route.params;
+    const { day, dayData, context, updateSplit } = route.params;
     const [exercises, setexercises] = useState();
 
     //Exercise Detail modal
@@ -85,11 +85,6 @@ const DayScreen = ({ navigation, route }) => {
             return nameString.includes(searchQuery.toLowerCase());
         });
 
-        console.log("NEW DATA");
-        updateData.forEach(item => {
-            console.log(item.name);
-        })
-
         setdisplayedExercises(updateData);
     }, [searchQuery]);
 
@@ -97,13 +92,18 @@ const DayScreen = ({ navigation, route }) => {
         if (hasNote) {
             setisTimed(false);
         }
-    }, hasNote)
+    }, [hasNote])
 
     useEffect(() => {
         if (isTimed) {
             sethasNote(false);
         }
-    }, isTimed)
+    }, [isTimed])
+
+    useEffect(() => {
+        updateSplit(day, exercises);
+        console.log("split days updated");
+    }, [exercises]);
 
     const onAddExercise = () => {
 
@@ -365,7 +365,9 @@ const DayScreen = ({ navigation, route }) => {
             }
 
             {staged ?
-                <TouchableOpacity style={style.buttonSmall}>
+                <TouchableOpacity style={style.buttonSmall} onPress={() => {
+
+                }}>
                     <Text style={style.buttonSmallText}>Save</Text>
                 </TouchableOpacity>
                 :

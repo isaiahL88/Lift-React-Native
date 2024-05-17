@@ -1,7 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, Icon } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, createRef } from 'react';
 import DayScreen from './DayScreen';
 
 const Tab = createMaterialTopTabNavigator();
@@ -16,11 +16,15 @@ const RoutineBrowse = ({ route, navigation }) => {
     const [user, setuser] = useState();
     const [days, setDays] = useState();
     const [splitDays, setSplitDays] = useState(); //map
+    const [refs, setrefs] = useState(); //map
 
     useEffect(() => {
         FIREBASE_AUTH.onAuthStateChanged(user => {
             if (user) { setuser(user); }
         });
+
+
+
     }, []);
 
     useEffect(() => {
@@ -29,32 +33,56 @@ const RoutineBrowse = ({ route, navigation }) => {
         }
     }, [user]);
 
+    useEffect(() => {
+        console.log(splitDays);
+    }, [splitDays])
+
+    const updateSplitData = (day, exercises) => {
+        let newMap = new Map(splitDays);
+        newMap.set(day, exercises);
+        setSplitDays(newMap);
+    }
+
     function updateRoutineData() {
 
         if (context === "browse") {
+            let refs = [];
+
             setSplitDays(routine["splitDays"]);
             setDays(routine["days"]);
-        } else if (context === "creation") {
-
         }
     }
+
 
     /*  
         This function will get the exercises from each DayScreen and upload the routine into the db
 
         NOte: the routine may be called from a creation context or even an update context
     */
-    function uploadRoutine() {
-        const userRoutinesRef = collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines");
-        const querySnapshot = getDocs(userRoutinesRef);
-        (await querySnapshot).forEach(doc => {
-            const data = doc.data();
+    async function uploadRoutine() {
 
-            setRoutines(prevState => {
-                return [...prevState, data];
-            });
+        let newRoutine = {
+            days: days,
+            splitDays: splitDays
+        }
+        if (context === "browse") {
+            // in this case we can just pull up the saved id in the routine
+            const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/" + routine.id));
 
-        })
+        } else if (context === "creation") {
+            const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
+        }
+
+    }
+
+    /*
+        On press for save button
+
+        This function will collect the 'exercises' array from each Day screen and put it into one splitDays
+        map to be uploaded to the datavase
+    */
+    function saveOnPress() {
+
     }
 
 
@@ -85,15 +113,29 @@ const RoutineBrowse = ({ route, navigation }) => {
                     }}>
                     {
                         days != null && splitDays != null ?
-                            days.map((day) => (
-                                // maps days to screens in the tab navigator
-                                // day is just the title and dayData is an array of exercies taken from split days
-                                <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse" }} />
-                            ))
+                            <>
+                                {
+                                    days.map((day) => (
+                                        // maps days to screens in the tab navigator
+                                        // day is just the title and dayData is an array of exercies taken from split days
+                                        <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse", updateSplit: updateSplitData }} />
+                                    ))
+                                }
+                            </>
                             :
                             <Text>Loading</Text>
                     }
                 </Tab.Navigator>
+                {
+                    splitDays != null && splitDays.size >= 1 ?
+
+                        splitDays.keys().map((name) => (
+                            <Text>name</Text>
+                        ))
+                        :
+                        <>
+                        </>
+                }
             </>
 
         )

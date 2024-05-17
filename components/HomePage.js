@@ -1,5 +1,4 @@
 import { View, Text, Image, StyleSheet } from 'react-native'
-import Home from './Home';
 import Friends from './Friends';
 import Search from './Search';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
