@@ -33,17 +33,13 @@ const RoutineBrowse = ({ route, navigation }) => {
         }
     }, [user]);
 
-    useEffect(() => {
-        console.log(splitDays);
-    }, [splitDays])
-
     const updateSplitData = (day, exercises) => {
         const newMap = new Map();
-        newMap.set(day, exercises);
         if (splitDays != null) {
             for (var i in splitDays) {
                 newMap.set(i, splitDays[i]);
             }
+            newMap.set(day, exercises);
             setSplitDays(newMap);
         }
 

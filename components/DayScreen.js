@@ -104,7 +104,6 @@ const DayScreen = ({ navigation, route }) => {
 
         if (exercises != null && exercises.length >= 1) {
             updateSplit(day, exercises);
-            console.log("split days updated");
         }
 
     }, [exercises]);
