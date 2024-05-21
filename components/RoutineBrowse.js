@@ -1,8 +1,11 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, Icon } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
-import { useEffect, useState, useRef, createRef } from 'react';
+import { useEffect, useState, useRef, createRef, useContext, React } from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DayScreen from './DayScreen';
+
+export const Context = React.createContext();
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -16,7 +19,13 @@ const RoutineBrowse = ({ route, navigation }) => {
     const [user, setuser] = useState();
     const [days, setDays] = useState();
     const [splitDays, setSplitDays] = useState(); //map
-    const [refs, setrefs] = useState(); //map
+    //Did the user stage any changes to this routine
+    const [staged, setstaged] = useState(false)
+    //Used to see if the dayScreen is in edit mode or in view mode
+    const [editMode, seteditMode] = useState(false);
+    //Add day modal display
+    const [addDayModal, setaddDayModal] = useState(false);
+
 
     useEffect(() => {
         FIREBASE_AUTH.onAuthStateChanged(user => {
@@ -42,17 +51,19 @@ const RoutineBrowse = ({ route, navigation }) => {
             newMap.set(day, exercises);
             setSplitDays(newMap);
         }
-
-
+        if (staged === false) {
+            setstaged(true);
+        }
     }
 
     function updateRoutineData() {
-
         if (context === "browse") {
-            let refs = [];
-
             setSplitDays(routine["splitDays"]);
             setDays(routine["days"]);
+        } else if (context === "creation") {
+            seteditMode(true);
+            setSplitDays([]);
+            setDays([]);
         }
     }
 
@@ -105,7 +116,20 @@ const RoutineBrowse = ({ route, navigation }) => {
         )
     } else {
         return (
-            <>
+            <Context.Provider value={[editMode, seteditMode]}>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={addDayModal}
+                    onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                        setaddDayModal(!addDayModal);
+                    }}>
+                    <View style={style.centeredView}>
+                        <View style={style.modalView}>
+                        </View>
+                    </View>
+                </Modal>
                 <Text style={style.bigHeader}>{routine.name}</Text>
                 <Tab.Navigator
                     tabBarOptions={{
@@ -129,8 +153,41 @@ const RoutineBrowse = ({ route, navigation }) => {
                             <Text>Loading</Text>
                     }
                 </Tab.Navigator>
+                {staged ?
+                    <TouchableOpacity style={style.buttonSmall} onPress={() => {
+                        uploadRoutine();
+                        //after routine is uploaded restore to un-staged and editMode off
+                        setstaged(false);
+                        seteditMode(false);
+                    }}>
+                        <Text style={style.buttonSmallText}>Save</Text>
+                    </TouchableOpacity>
+                    :
+                    <>
+                    </>
+                }
 
-            </>
+                {context === "browse" ?
+                    <TouchableOpacity onPress={() => {
+                        seteditMode(true);
+                    }}>
+                        <Icon name={editMode ? "cancel" : "square-edit-outline"} size={30} color="#900"></Icon>
+                    </TouchableOpacity>
+                    :
+                    <></>
+                }
+
+                {editMode ?
+                    <TouchableOpacity onPress={() => {
+
+                    }}>
+                        {/* TODO: FIX ICON */}
+                        <Icon name="add" size={30} color="#900"></Icon>
+                    </TouchableOpacity>
+                    :
+                    <></>
+                }
+            </Context.Provider>
 
         )
     }
@@ -140,6 +197,27 @@ const RoutineBrowse = ({ route, navigation }) => {
 
 
 const style = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }, modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 30,
+        paddingRight: 100,
+        paddingLeft: 100,
+        alignItems: 'center',
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
     bigHeader: {
         fontSize: 30,
         fontFamily: 'nunito',
@@ -210,6 +288,34 @@ const style = StyleSheet.create({
     mediumText: {
         fontSize: 20,
         fontFamily: 'nunito'
+    },
+    largeText: {
+        fontSize: 30,
+        fontFamily: 'nunito'
+    },
+    button: {
+        marginTop: 5,
+        borderRadius: 30,
+        padding: 10,
+        width: 250,
+        borderWidth: 1,
+        borderColor: "#5D4DE4",
+        alignItems: 'center'
+    },
+    buttonSmallText: {
+        fontSize: 13,
+        fontFamily: 'nunito'
+    },
+    buttonSmall: {
+        borderRadius: 30,
+        width: 60,
+        height: 30,
+        margin: 10,
+        borderWidth: 1,
+        borderColor: "#5D4DE4",
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'flex-end'
     }
 });
 

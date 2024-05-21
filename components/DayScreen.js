@@ -1,11 +1,12 @@
 import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch, TextInput, Image } from "react-native";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 import exerciseJson from '../assets/raw/exercise_data.json';
 import { Picker } from "@react-native-picker/picker";
 import dismissKeyb from 'react-native-dismiss-keyboard';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Context from './RoutineBrowse';
 
 
 
@@ -27,10 +28,10 @@ const DayScreen = ({ navigation, route }) => {
         pickerItems.push(<Picker.Item label={i} value={i} />);
     }
 
-    //Used to see if the dayScreen is in edit mode or in view mode
-    const [editMode, seteditMode] = useState(true);
-    //Did the user stage any changes to this routine
-    const [staged, setstaged] = useState(false)
+    //Edit mode state
+    //Caried from Routine Browse using Context API
+    const [editMode, seteditMode] = useContext(Context);
+
 
     const { day, dayData, context, updateSplit } = route.params;
     const [exercises, setexercises] = useState();
@@ -108,10 +109,6 @@ const DayScreen = ({ navigation, route }) => {
 
     }, [exercises]);
 
-    const onAddExercise = () => {
-
-    };
-
     const updateSearch = (search) => {
         setsearchQuery(search);
     }
@@ -138,8 +135,6 @@ const DayScreen = ({ navigation, route }) => {
                         <TouchableOpacity style={style.closeButton} onPress={() => { setmodalVis(!modalVis) }}>
                             <Text style={style.buttonText}>Close</Text>
                         </TouchableOpacity>
-
-
                     </View>
                 </View>
             </Modal>
@@ -366,29 +361,6 @@ const DayScreen = ({ navigation, route }) => {
                 <>
                 </>
             }
-
-            {staged ?
-                <TouchableOpacity style={style.buttonSmall} onPress={() => {
-
-                }}>
-                    <Text style={style.buttonSmallText}>Save</Text>
-                </TouchableOpacity>
-                :
-                <>
-                </>
-            }
-
-            {context === "browse" ?
-                <TouchableOpacity onPress={() => {
-                    seteditMode(true);
-                }}>
-                    <Icon name={editMode ? "cancel" : "square-edit-outline"} size={30} color="#900"></Icon>
-                </TouchableOpacity>
-                :
-                <></>
-            }
-
-
         </View >
 
     )
