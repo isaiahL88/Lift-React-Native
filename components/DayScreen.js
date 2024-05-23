@@ -1,16 +1,11 @@
 import { StyleSheet, Modal, View, Text, TouchableOpacity, FlatList, Switch, TextInput, Image } from "react-native";
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Searchbar } from 'react-native-paper';
 import exerciseJson from '../assets/raw/exercise_data.json';
 import { Picker } from "@react-native-picker/picker";
 import dismissKeyb from 'react-native-dismiss-keyboard';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Context from './RoutineBrowse';
-
-
-
-
+import { Context } from './RoutineBrowse';
 
 /*
     Currently: Screen representing one day in a routine, lists out exercises
@@ -28,9 +23,9 @@ const DayScreen = ({ navigation, route }) => {
         pickerItems.push(<Picker.Item label={i} value={i} />);
     }
 
-    //Edit mode state
-    //Caried from Routine Browse using Context API
-    const [editMode, seteditMode] = useContext(Context);
+    // //Edit mode state
+    // //Caried from Routine Browse using Context API
+    // const editMode = useContext(Context);
 
 
     const { day, dayData, context, updateSplit } = route.params;

@@ -1,9 +1,10 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, Icon } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
-import { useEffect, useState, useRef, createRef, useContext, React } from 'react';
+import React, { useEffect, useState, useRef, createRef, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DayScreen from './DayScreen';
+import { TextInput } from 'react-native-paper';
 
 export const Context = React.createContext();
 
@@ -22,9 +23,11 @@ const RoutineBrowse = ({ route, navigation }) => {
     //Did the user stage any changes to this routine
     const [staged, setstaged] = useState(false)
     //Used to see if the dayScreen is in edit mode or in view mode
-    const [editMode, seteditMode] = useState(false);
+    const [editMode, seteditMode] = useContext(false);
     //Add day modal display
     const [addDayModal, setaddDayModal] = useState(false);
+    //Used for the day name in the add day modal
+    const [dayName, setdayName] = useState("");
 
 
     useEffect(() => {
@@ -44,13 +47,13 @@ const RoutineBrowse = ({ route, navigation }) => {
 
     const updateSplitData = (day, exercises) => {
         const newMap = new Map();
-        if (splitDays != null) {
-            for (var i in splitDays) {
-                newMap.set(i, splitDays[i]);
-            }
-            newMap.set(day, exercises);
-            setSplitDays(newMap);
-        }
+        // if (splitDays != null) {
+        //     for (var i in splitDays) {
+        //         newMap.set(i, splitDays[i]);
+        //     }
+        //     newMap.set(day, exercises);
+        //     setSplitDays(newMap);
+        // }
         if (staged === false) {
             setstaged(true);
         }
@@ -127,6 +130,13 @@ const RoutineBrowse = ({ route, navigation }) => {
                     }}>
                     <View style={style.centeredView}>
                         <View style={style.modalView}>
+                            <Text style={style.largeText}>Add Day</Text>
+                            <TextInput
+                                value={dayName}
+                                style={style.inputStyle}
+                                placeholder="Enter Day Name"
+                                onChangeText={text => setdayName(text)}
+                            />
                         </View>
                     </View>
                 </Modal>
@@ -224,6 +234,20 @@ const style = StyleSheet.create({
         textAlign: 'center',
         marginTop: 10,
         marginBottom: 10
+    },
+    inputStyle: {
+        marginTop: 20,
+        width: 320,
+        height: 200,
+        textAlign: 'left',
+        backgroundColor: "#FFFFFF00",
+        borderWidth: 1,
+        borderColor: "#6F7285",
+        margin: 10,
+        borderRadius: 10,
+        padding: 5,
+        fontSize: 25,
+        fontFamily: 'nunito',
     },
     exercise: {
         width: "100%",

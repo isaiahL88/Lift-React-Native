@@ -32,7 +32,11 @@
     },
     "ios": {
       "bundleIdentifier": "com.isaiah88"
-    }
+    },
+    "plugins": [
+      "expo-build-properties",
+      "expo-font"
+    ]
   },
   "extra": {
     "eas": {
