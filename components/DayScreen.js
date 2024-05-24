@@ -25,7 +25,7 @@ const DayScreen = ({ navigation, route }) => {
 
     // //Edit mode state
     // //Caried from Routine Browse using Context API
-    // const editMode = useContext(Context);
+    const editMode = useContext(Context);
 
 
     const { day, dayData, context, updateSplit } = route.params;

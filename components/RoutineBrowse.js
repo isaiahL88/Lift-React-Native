@@ -23,7 +23,7 @@ const RoutineBrowse = ({ route, navigation }) => {
     //Did the user stage any changes to this routine
     const [staged, setstaged] = useState(false)
     //Used to see if the dayScreen is in edit mode or in view mode
-    const [editMode, seteditMode] = useContext(false);
+    const [editMode, seteditMode] = useState(false);
     //Add day modal display
     const [addDayModal, setaddDayModal] = useState(false);
     //Used for the day name in the add day modal
