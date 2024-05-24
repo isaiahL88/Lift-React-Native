@@ -25,10 +25,10 @@ const DayScreen = ({ navigation, route }) => {
 
     // //Edit mode state
     // //Caried from Routine Browse using Context API
-    const editMode = useContext(Context);
+    const [editMode, seteditMode] = useContext(Context);
 
 
-    const { day, dayData, context, updateSplit } = route.params;
+    const { day, dayData, context, updateSplit, setstaged } = route.params;
     const [exercises, setexercises] = useState();
 
     //Exercise Detail modal

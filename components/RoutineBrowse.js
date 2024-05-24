@@ -63,6 +63,7 @@ const RoutineBrowse = ({ route, navigation }) => {
         if (context === "browse") {
             setSplitDays(routine["splitDays"]);
             setDays(routine["days"]);
+
         } else if (context === "creation") {
             seteditMode(true);
             setSplitDays([]);
@@ -155,7 +156,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                                     days.map((day) => (
                                         // maps days to screens in the tab navigator
                                         // day is just the title and dayData is an array of exercies taken from split days
-                                        <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse", updateSplit: updateSplitData }} />
+                                        <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse", updateSplit: updateSplitData, setstaged: setstaged }} />
                                     ))
                                 }
                             </>
@@ -163,40 +164,38 @@ const RoutineBrowse = ({ route, navigation }) => {
                             <Text>Loading</Text>
                     }
                 </Tab.Navigator>
-                {staged ?
-                    <TouchableOpacity style={style.buttonSmall} onPress={() => {
-                        uploadRoutine();
-                        //after routine is uploaded restore to un-staged and editMode off
-                        setstaged(false);
-                        seteditMode(false);
-                    }}>
-                        <Text style={style.buttonSmallText}>Save</Text>
-                    </TouchableOpacity>
-                    :
-                    <>
-                    </>
-                }
+                <View style={style.buttonBox}>
 
-                {context === "browse" ?
-                    <TouchableOpacity onPress={() => {
-                        seteditMode(true);
-                    }}>
-                        <Icon name={editMode ? "cancel" : "square-edit-outline"} size={30} color="#900"></Icon>
-                    </TouchableOpacity>
-                    :
-                    <></>
-                }
 
-                {editMode ?
-                    <TouchableOpacity onPress={() => {
 
-                    }}>
-                        {/* TODO: FIX ICON */}
-                        <Icon name="add" size={30} color="#900"></Icon>
-                    </TouchableOpacity>
-                    :
-                    <></>
-                }
+                    {/* Edit Button  */
+                        context === "browse" ?
+                            <TouchableOpacity style={style.editButton} onPress={() => {
+                                seteditMode(!editMode);
+                                setstaged(false);
+                            }}>
+                                <Icon name={editMode ? "close" : "square-edit-outline"} size={60} color="#5D4DE4"></Icon>
+                            </TouchableOpacity>
+                            :
+                            <></>
+                    }
+
+                    {staged ?
+                        /* Save Button  */
+                        <TouchableOpacity style={style.saveButton} onPress={() => {
+                            uploadRoutine();
+                            //after routine is uploaded restore to un-staged and editMode off
+                            setstaged(false);
+                            seteditMode(false);
+                        }}>
+                            <Text style={style.mediumText}>Save</Text>
+                        </TouchableOpacity>
+                        :
+                        <>
+                        </>
+                    }
+                </View>
+
             </Context.Provider>
 
         )
@@ -298,6 +297,8 @@ const style = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+
+    //--------------------- BUTTON STUFF ---------------------
     closeButton: {
         marginTop: 20,
         borderRadius: 30,
@@ -305,17 +306,29 @@ const style = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#5D4DE4"
     },
+    saveButton: {
+        borderRadius: 30,
+        width: 100,
+        height: 50,
+        margin: 20,
+        marginBottom: 25,
+        borderWidth: 1,
+        borderColor: "#5D4DE4",
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'flex-end'
+    },
     buttonText: {
         fontSize: 20,
         fontFamily: 'nunito'
     },
-    mediumText: {
-        fontSize: 20,
-        fontFamily: 'nunito'
+    editButton: {
+        margin: 20,
     },
-    largeText: {
-        fontSize: 30,
-        fontFamily: 'nunito'
+    buttonBox: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%'
     },
     button: {
         marginTop: 5,
@@ -325,10 +338,6 @@ const style = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#5D4DE4",
         alignItems: 'center'
-    },
-    buttonSmallText: {
-        fontSize: 13,
-        fontFamily: 'nunito'
     },
     buttonSmall: {
         borderRadius: 30,
@@ -340,7 +349,21 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-end'
+    },
+    //--------------------- Text STUFF ---------------------
+    mediumText: {
+        fontSize: 20,
+        fontFamily: 'nunito'
+    },
+    largeText: {
+        fontSize: 30,
+        fontFamily: 'nunito'
+    },
+    buttonSmallText: {
+        fontSize: 13,
+        fontFamily: 'nunito'
     }
+    //------------------------------------------
 });
 
 export default RoutineBrowse
