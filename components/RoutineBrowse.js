@@ -47,13 +47,13 @@ const RoutineBrowse = ({ route, navigation }) => {
 
     const updateSplitData = (day, exercises) => {
         const newMap = new Map();
-        // if (splitDays != null) {
-        //     for (var i in splitDays) {
-        //         newMap.set(i, splitDays[i]);
-        //     }
-        //     newMap.set(day, exercises);
-        //     setSplitDays(newMap);
-        // }
+        if (splitDays != null) {
+            for (var i in splitDays) {
+                newMap.set(i, splitDays[i]);
+            }
+            newMap.set(day, exercises);
+            setSplitDays(newMap);
+        }
         if (staged === false) {
             setstaged(true);
         }
@@ -79,27 +79,25 @@ const RoutineBrowse = ({ route, navigation }) => {
     */
     async function uploadRoutine() {
 
+        //THIS SHOULD BE BROWSE ONLY!!!!!!!!!!!
         let newRoutine = {
+            name: routine.name,
+            id: routine.id,
+            privacy: routine.privacy,
+            style: routine.style,
+            muscleGroups: routine.muscleGroups,
             days: days,
             splitDays: splitDays
         }
         if (context === "browse") {
             // in this case we can just pull up the saved id in the routine
             const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/" + routine.id));
+            await setDoc(userRoutinesRef, newRoutine);
 
         } else if (context === "creation") {
             const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
         }
 
-    }
-
-    /*
-        On press for save button
-
-        This function will collect the 'exercises' array from each Day screen and put it into one splitDays
-        map to be uploaded to the datavase
-    */
-    function saveOnPress() {
 
     }
 
@@ -121,6 +119,8 @@ const RoutineBrowse = ({ route, navigation }) => {
     } else {
         return (
             <Context.Provider value={[editMode, seteditMode]}>
+
+                {/* Add Day Modal */}
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -171,8 +171,17 @@ const RoutineBrowse = ({ route, navigation }) => {
                     {/* Edit Button  */
                         context === "browse" ?
                             <TouchableOpacity style={style.editButton} onPress={() => {
-                                seteditMode(!editMode);
-                                setstaged(false);
+                                if (editMode) {
+                                    //RESET: Essentially go back to back to non edit mode and remove all staged changed
+                                    setstaged(false); //UNstaged
+                                    //Changes reset to when the page was opened
+                                    setSplitDays(routine["splitDays"]); 12
+                                    setDays(routine["days"]);
+                                    seteditMode(!editMode);
+                                } else {
+                                    seteditMode(!editMode);
+                                    setstaged(false);
+                                }
                             }}>
                                 <Icon name={editMode ? "close" : "square-edit-outline"} size={60} color="#5D4DE4"></Icon>
                             </TouchableOpacity>
