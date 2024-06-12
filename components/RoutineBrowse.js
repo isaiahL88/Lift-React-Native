@@ -5,13 +5,18 @@ import React, { useEffect, useState, useRef, createRef, useContext } from 'react
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DayScreen from './DayScreen';
 import { TextInput } from 'react-native-paper';
+import { Picker } from "@react-native-picker/picker";
 
 export const Context = React.createContext();
 
 const Tab = createMaterialTopTabNavigator();
 
 /*
-    todo: add the routine name somewhere, hopefully above the top navigation like android
+    Pre Cond:
+        context == creations? 
+            Then there should first be 
+
+
 */
 const RoutineBrowse = ({ route, navigation }) => {
     const { routine, context } = route.params;
@@ -29,6 +34,11 @@ const RoutineBrowse = ({ route, navigation }) => {
     //Used for the day name in the add day modal
     const [dayName, setdayName] = useState("");
 
+    //----- New Routine State -----
+    const [newRoutineModal, setnewRoutineModal] = useState(context === "creation" ? true : false); //Risky code?
+    const [nameInput, setnameInput] = useState();
+    //----- Privacy Picker -----
+    const [privacyPickVal, setprivacyPickVal] = useState();
 
     useEffect(() => {
         FIREBASE_AUTH.onAuthStateChanged(user => {
@@ -79,23 +89,41 @@ const RoutineBrowse = ({ route, navigation }) => {
     */
     async function uploadRoutine() {
 
-        //THIS SHOULD BE BROWSE ONLY!!!!!!!!!!!
-        let newRoutine = {
-            name: routine.name,
-            id: routine.id,
-            privacy: routine.privacy,
-            style: routine.style,
-            muscleGroups: routine.muscleGroups,
-            days: days,
-            splitDays: splitDays
-        }
+
         if (context === "browse") {
+            let newRoutine = {
+                name: routine.name,
+                id: routine.id,
+                privacy: routine.privacy,
+                style: routine.style,
+                muscleGroups: routine.muscleGroups,
+                days: days,
+                splitDays: splitDays
+            }
+
             // in this case we can just pull up the saved id in the routine
             const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/" + routine.id));
             await setDoc(userRoutinesRef, newRoutine);
 
         } else if (context === "creation") {
+            /*
+                Needed:
+                    name
+                    id?
+                    privacy
+                    style
+
+                Recorded in RoutineBrowse:
+                    days
+                    splitDays
+
+            */
+            let newRoutine = {
+
+            };
+
             const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
+            await setDoc(userRoutineRef, newRoutine);
         }
 
 
@@ -119,6 +147,51 @@ const RoutineBrowse = ({ route, navigation }) => {
     } else {
         return (
             <Context.Provider value={[editMode, seteditMode]}>
+                {/* New Routine Modal (ONLY USED WHEN CONTEXT IS CREATION)
+                        - opens once when the routine browse is first opened*
+
+                    Data Needed from this modal:
+                        - name
+                        - id?
+                        - privacy
+                */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={newRoutineModal}
+                    onRequestClose={() => {
+                        Alert.alert('New Routine Modal Closed');
+                        setnewRoutineModal(!newRoutineModal);
+                    }}
+                >
+                    <View style={style.centeredView}>
+                        <View style={style.modalView}>
+                            <Text style={style.largeText}>New Routine</Text>
+                            <TextInput
+                                style={style.inputStyle}
+                                value={nameInput}
+                                placehodler={"Enter Routine Name"}
+                                onChangeText={text => setnameInput(text)}
+                            />
+                            <Picker
+                                style={style.pickerLong}
+                                selectedValue={privacyPickVal}
+                                onValueChange={(itemValue) => setprivacyPickVal(itemValue)}
+                            >
+                                <Picker.item label="private" value="private" />
+                                <Picker.item label="public" value="public" />
+                                <Picker.item label="friends" value="friends" />
+                            </Picker>
+                            <TouchableOpacity style={style.button}
+                                onPress={() => {
+
+                                }}
+                            >
+                                <Text style={style.mediumText}>Start Routine Creation!</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
 
                 {/* Add Day Modal */}
                 <Modal
@@ -168,7 +241,7 @@ const RoutineBrowse = ({ route, navigation }) => {
 
 
 
-                    {/* Edit Button  */
+                    {/* Edit Button  (ONLY VISIBLE IN BROWSE MODE)*/
                         context === "browse" ?
                             <TouchableOpacity style={style.editButton} onPress={() => {
                                 if (editMode) {
@@ -236,6 +309,13 @@ const style = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
+    // ---- creation modal ------
+    pickerLong: {
+        height: 50,
+        width: 150,
+        marginBottom: 150
+    },
+
     bigHeader: {
         fontSize: 30,
         fontFamily: 'nunito',
