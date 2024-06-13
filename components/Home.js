@@ -17,7 +17,7 @@ const Home = ({ navigation }) => {
             }}
         >
             <Stack.Screen name="MyRoutines" component={MyRoutines} />
-            <Stack.Screen name="HomeScreen" component={HomePage} />
+            <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomePage} />
             <Stack.Screen name="RoutineBrowse" component={RoutineBrowse} />
             <Stack.Screen name="RoutineCreate" component={RoutineCreate} />
         </Stack.Navigator>
