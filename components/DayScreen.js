@@ -23,13 +23,14 @@ const DayScreen = ({ navigation, route }) => {
         pickerItems.push(<Picker.Item label={i} value={i} />);
     }
 
-    // //Edit mode state
-    // //Caried from Routine Browse using Context API
-    const [editMode, seteditMode] = useContext(Context);
+    //Using context from the routine browser to permute editmode and split days between all Day Screens
+    //First we deconstruct the two sets for editMode and split Days
+    const { em, sd } = useContext(Context);
+    const [editMode, seteditMode] = em;
+    const [splitDays, setSplitDays] = sd;
+    let exercises = splitDays[day];
+    const { day, context, setstaged } = route.params;
 
-
-    const { day, dayData, context, updateSplit, setstaged } = route.params;
-    const [exercises, setexercises] = useState();
 
     //Exercise Detail modal
     const [modalVis, setmodalVis] = useState(false);
@@ -66,14 +67,6 @@ const DayScreen = ({ navigation, route }) => {
     const [pickerVal3, setpickerVal3] = useState();
 
 
-
-    useEffect(() => {
-        if (dayData != null) {
-            setexercises(dayData);
-        }
-    }, [dayData]);
-
-
     // //Update the displayed exercises under the search bar
     useEffect(() => {
         const updateData = exerciseList.filter((item) => {
@@ -96,13 +89,11 @@ const DayScreen = ({ navigation, route }) => {
         }
     }, [isTimed])
 
-    useEffect(() => {
-
-        if (exercises != null && exercises.length >= 1) {
-            updateSplit(day, exercises);
-        }
-
-    }, [exercises]);
+    // const updateBrowser = () => {
+    //     if (exercises != null && exercises.length >= 1) {
+    //         updateSplit(day, exercises);
+    //     }
+    // }
 
     const updateSearch = (search) => {
         setsearchQuery(search);
@@ -280,19 +271,23 @@ const DayScreen = ({ navigation, route }) => {
                             {/* Here is where we create the new exercise object and add it to the current exercises */}
                             {/* User still has to save the routine to cemete these changes in the db */}
                             <TouchableOpacity style={style.closeButton} onPress={() => {
-                                setexercises([...exercises,
+
+                                const newExercises = [...splitDays[day],
                                 {
                                     name: selectedExercise.name,
-                                    note: note,
+                                    note: note ? note : null,
                                     muscleTarget: selectedExercise.type,
                                     hasNote: hasNote,
-                                    isTimed: isTimed,
-                                    reps: pickerVal1,
-                                    sets: pickerVal2,
-                                    time: pickerVal1,
-                                    timeUnit: pickerVal2
-                                }]);
-
+                                    isTimed: isTimed ? isTimed : null,
+                                    reps: pickerVal1 ? pickerVal1 : null,
+                                    sets: pickerVal2 ? pickerVal2 : null,
+                                    time: pickerVal1 ? pickerVal1 : null,
+                                    timeUnit: pickerVal2 ? pickerVal2 : null
+                                }];
+                                console.log("New Exercies: " + JSON.stringify(newExercises));
+                                const newObj = { ...splitDays, [day]: newExercises }
+                                console.log("newObj" + JSON.stringify(newObj));
+                                setSplitDays(newObj);
                                 //reset modal
                                 setexDetailVisisble(!exDetailVisible);
                                 sethasNote(false);
@@ -316,11 +311,11 @@ const DayScreen = ({ navigation, route }) => {
                         </View>
                     </View>
                 </View>
-            </Modal>
+            </Modal >
 
 
             <FlatList
-                data={exercises}
+                data={splitDays[day]}
                 renderItem={({ item }) => {
                     if (item.hasNote) {
                         return (
@@ -348,13 +343,14 @@ const DayScreen = ({ navigation, route }) => {
                 style={style.exerciseList}
 
             />
-            {editMode ?
-                <TouchableOpacity style={style.button} onPress={() => { setexModalVisible(true); }}>
-                    <Text style={style.buttonText}>Add Exercises</Text>
-                </TouchableOpacity>
-                :
-                <>
-                </>
+            {
+                editMode ?
+                    <TouchableOpacity style={style.button} onPress={() => { setexModalVisible(true); }}>
+                        <Text style={style.buttonText}>Add Exercises</Text>
+                    </TouchableOpacity>
+                    :
+                    <>
+                    </>
             }
         </View >
 

@@ -6,6 +6,8 @@ import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndP
 import { FIREBASE_AUTH } from './firebaseConfig.js'
 import { useFonts } from 'expo-font';
 import logo from './assets/logo-transparent.png';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 
 
 export default function App() {

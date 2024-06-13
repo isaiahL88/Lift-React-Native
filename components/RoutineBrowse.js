@@ -1,6 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
+import { collection, setDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState, useRef, createRef, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DayScreen from './DayScreen';
@@ -20,11 +21,16 @@ const Tab = createMaterialTopTabNavigator();
 */
 const RoutineBrowse = ({ route, navigation }) => {
     const { routine, context } = route.params;
-    //Each day in the routine
-    //Note each day will be maped to a RoutineDay component
+
     const [user, setuser] = useState();
+
+    // ------------ Routine Data ----------------
     const [days, setDays] = useState();
     const [splitDays, setSplitDays] = useState(); //map
+    const [routineName, setroutineName] = useState();
+    const [routinePrivacy, setroutinePrivacy] = useState();
+    //-------------------------------------------
+
     //Did the user stage any changes to this routine
     const [staged, setstaged] = useState(false)
     //Used to see if the dayScreen is in edit mode or in view mode
@@ -39,6 +45,8 @@ const RoutineBrowse = ({ route, navigation }) => {
     const [nameInput, setnameInput] = useState();
     //----- Privacy Picker -----
     const [privacyPickVal, setprivacyPickVal] = useState();
+    //----- BackUp Sate ----
+    // This is used from a "browse" context when staged changes are cancelled
 
     useEffect(() => {
         FIREBASE_AUTH.onAuthStateChanged(user => {
@@ -46,8 +54,11 @@ const RoutineBrowse = ({ route, navigation }) => {
         });
 
 
-
     }, []);
+
+    useEffect(() => {
+        console.log("UPDATED SPLIT DAYS: " + JSON.stringify(splitDays));
+    }, [splitDays]);
 
     useEffect(() => {
         if (user) {
@@ -55,31 +66,28 @@ const RoutineBrowse = ({ route, navigation }) => {
         }
     }, [user]);
 
-    const updateSplitData = (day, exercises) => {
-        const newMap = new Map();
-        if (splitDays != null) {
-            for (var i in splitDays) {
-                newMap.set(i, splitDays[i]);
-            }
-            newMap.set(day, exercises);
-            setSplitDays(newMap);
-        }
-        if (staged === false) {
-            setstaged(true);
-        }
-    }
 
     function updateRoutineData() {
         if (context === "browse") {
             setSplitDays(routine["splitDays"]);
             setDays(routine["days"]);
+            setroutineName(routine["name"]);
+            setroutinePrivacy(routine["privacy"]);
 
         } else if (context === "creation") {
             seteditMode(true);
             setSplitDays([]);
             setDays([]);
+            setroutineName("");
+            setroutinePrivacy("");
         }
     }
+
+    /*
+        *New Function* Which we reload this routine data from the server if the user
+        Cancels it's staged changes
+
+    */
 
 
     /*  
@@ -91,8 +99,9 @@ const RoutineBrowse = ({ route, navigation }) => {
 
 
         if (context === "browse") {
+            // UPDATING ROUTINE
             let newRoutine = {
-                name: routine.name,
+                name: routineName,
                 id: routine.id,
                 privacy: routine.privacy,
                 style: routine.style,
@@ -100,9 +109,9 @@ const RoutineBrowse = ({ route, navigation }) => {
                 days: days,
                 splitDays: splitDays
             }
-
+            console.log("NEW ROUTINE TO BE UPLOADED: " + JSON.stringify(newRoutine));
             // in this case we can just pull up the saved id in the routine
-            const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/" + routine.id));
+            const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"), routine.id);
             await setDoc(userRoutinesRef, newRoutine);
 
         } else if (context === "creation") {
@@ -146,7 +155,7 @@ const RoutineBrowse = ({ route, navigation }) => {
         )
     } else {
         return (
-            <Context.Provider value={[editMode, seteditMode]}>
+            <Context.Provider value={{ em: [editMode, seteditMode,], sd: [splitDays, setSplitDays] }}>
                 {/* New Routine Modal (ONLY USED WHEN CONTEXT IS CREATION)
                         - opens once when the routine browse is first opened*
 
@@ -184,7 +193,8 @@ const RoutineBrowse = ({ route, navigation }) => {
                             </Picker>
                             <TouchableOpacity style={style.button}
                                 onPress={() => {
-
+                                    setroutineName(nameInput);
+                                    setroutinePrivacy(privacyPickVal);
                                 }}
                             >
                                 <Text style={style.mediumText}>Start Routine Creation!</Text>
@@ -214,7 +224,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                         </View>
                     </View>
                 </Modal>
-                <Text style={style.bigHeader}>{routine.name}</Text>
+                <Text style={style.bigHeader}>{routineName}</Text>
                 <Tab.Navigator
                     tabBarOptions={{
                         activeTintColor: '#5D4DE4',
@@ -229,7 +239,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                                     days.map((day) => (
                                         // maps days to screens in the tab navigator
                                         // day is just the title and dayData is an array of exercies taken from split days
-                                        <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse", updateSplit: updateSplitData, setstaged: setstaged }} />
+                                        <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse", setstaged: setstaged }} />
                                     ))
                                 }
                             </>
@@ -248,7 +258,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                                     //RESET: Essentially go back to back to non edit mode and remove all staged changed
                                     setstaged(false); //UNstaged
                                     //Changes reset to when the page was opened
-                                    setSplitDays(routine["splitDays"]); 12
+                                    setSplitDays(routine["splitDays"]);
                                     setDays(routine["days"]);
                                     seteditMode(!editMode);
                                 } else {
@@ -256,14 +266,14 @@ const RoutineBrowse = ({ route, navigation }) => {
                                     setstaged(false);
                                 }
                             }}>
-                                <Icon name={editMode ? "close" : "square-edit-outline"} size={60} color="#5D4DE4"></Icon>
+                                <Icon name={editMode ? "close" : "square-edit-outline"} size={40} color="#5D4DE4"></Icon>
                             </TouchableOpacity>
                             :
                             <></>
                     }
 
                     {staged ?
-                        /* Save Button  */
+                        /* ------- SAVE BUTTON -------- */
                         <TouchableOpacity style={style.saveButton} onPress={() => {
                             uploadRoutine();
                             //after routine is uploaded restore to un-staged and editMode off

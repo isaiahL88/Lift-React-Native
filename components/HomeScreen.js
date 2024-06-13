@@ -18,7 +18,7 @@ const HomeScreen = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={style.button} onPress={() => {
-                    navigation.navigate("RoutineBrowse", { routine: { name: "test" }, context: "creation" });
+                    navigation.navigate("RoutineBrowse", { context: "creation" });
                 }}>
                     <Text style={style.buttonText}>Create Routines</Text>
                 </TouchableOpacity>
