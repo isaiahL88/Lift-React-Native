@@ -66,6 +66,9 @@ const DayScreen = ({ navigation, route }) => {
     const [pickerVal2, setpickerVal2] = useState();
     const [pickerVal3, setpickerVal3] = useState();
 
+    useEffect(() => {
+        console.log("EDITMODE IS: " + editMode);
+    }, [editMode]);
 
     // //Update the displayed exercises under the search bar
     useEffect(() => {
@@ -313,12 +316,15 @@ const DayScreen = ({ navigation, route }) => {
                 </View>
             </Modal >
 
-
             <FlatList
                 style={style.exerciseList}
-                data={splitDays[day]}
+                data={editMode ? [...splitDays[day], { addMark: true }] : splitDays[day]}
                 renderItem={({ item }) => {
-                    if (item.hasNote) {
+                    if (item.addMark == true) {
+                        <TouchableOpacity style={style.button} onPress={() => { setexModalVisible(true); }}>
+                            <Text style={style.buttonText}>Add Exercises</Text>
+                        </TouchableOpacity>
+                    } else if (item.hasNote) {
                         return (
                             <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.note); setmodalTitle(item.name); setmodalVis(!modalVis); }}>
                                 <Text style={style.exerciseText}>{item.name}</Text>
@@ -352,7 +358,8 @@ const DayScreen = ({ navigation, route }) => {
                     <>
                     </>
             }
-        </View >
+        </View>
+
 
     )
 }
@@ -361,7 +368,11 @@ const DayScreen = ({ navigation, route }) => {
 const style = StyleSheet.create({
     page: {
         alignItems: 'center',
-        backgroundColor: '#F8F8FF'
+        backgroundColor: '#F8F8FF',
+        height: '100%',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        margin: 0
     },
     inputStyle: {
         marginTop: 20,
@@ -450,8 +461,7 @@ const style = StyleSheet.create({
         fontFamily: 'nunito'
     },
     exerciseList: {
-        marginTop: 15,
-        height: "100%"
+        flexGrow: 0
     },
     exerciseDescr: {
         width: 120,

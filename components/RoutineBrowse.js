@@ -218,10 +218,10 @@ const RoutineBrowse = ({ route, navigation }) => {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={addDayModal}
+                visible={styleSelectModal}
                 onRequestClose={() => {
                     Alert.alert('Modal has been closed.');
-                    setaddDayModal(!addDayModal);
+                    setstyleSelectModal(!styleSelectModal);
                 }}>
                 <View style={style.centeredView}>
                     <View style={style.modalView}>
@@ -250,10 +250,12 @@ const RoutineBrowse = ({ route, navigation }) => {
                             placeholder="Enter Day Name"
                             onChangeText={text => setdayName(text)}
                         />
-                        <TouchableOpacity style={style.buttonSmall} onPress={() => {
-                            setDays([dayName, ...days]);
+                        <TouchableOpacity style={style.closeButton} onPress={() => {
+                            setDays([...days, dayName]);
                             const newObj = { ...splitDays, [dayName]: [] }
                             setSplitDays(newObj);
+                            setdayName("");
+                            setaddDayModal(false);
                         }}>
                             <Text style={style.buttonText}>Add</Text>
                         </TouchableOpacity>
@@ -266,31 +268,15 @@ const RoutineBrowse = ({ route, navigation }) => {
                     activeTintColor: '#000000',
                     indicatorStyle: {
                         backgroundColor: '#5D4DE4',
-                        width: '40%'
                     },
                     tabBarLabelStyle: {
                         fontFamily: 'nunito'
                     },
-                    tabBarStyle: {
-                        borderWidth: 0,
-                        margin: 20,
-                        justifyContent: 'center',
-                        alignItems: 'center'
 
-                    },
-                    tabBarContentContainerStyle: {
-                        width: 500,
-                        justifyContent: 'center',
-                        alignItems: 'center'
-
-                    }
                 }}
                 screenOptions={{
-                    tabBarItemStyle: {
-                    },
-                    tabBarStyle: {
-                        widht: '50%'
-                    }
+                    tabBarScrollEnabled: true,
+
                 }}
             >
                 {
