@@ -37,7 +37,7 @@ const HomeScreen = ({ navigation }) => {
 
                     <TouchableOpacity style={style.routineButtons} onPress={() => {
                         console.log("Clicked");
-                        navigation.navigate("MyRoutines")
+                        navigation.navigate("MyRoutines");
                     }}>
                         <Text style={style.buttonText} >My Routines</Text>
                     </TouchableOpacity>
@@ -75,7 +75,7 @@ const style = StyleSheet.create({
     routineContainer: {
         flexDirection: 'row',
         width: '90%',
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-between'
     },
     liftPrevContainer: {
         width: '90%',
@@ -102,18 +102,25 @@ const style = StyleSheet.create({
 
     },
     routineButtons: {
-        width: 170,
-        height: 170,
-        backgroundColor: 'transparent',
+        width: 180,
+        height: 180,
+        backgroundColor: '#F9F9FB',
         borderRadius: 45,
         borderStyle: 'solid',
-        borderWidth: 2,
+        borderWidth: 1,
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderColor: '#5D4DE488',
         opacity: 1,
-        zIndex: 20
+        zIndex: 20,
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.20,
+        shadowRadius: 1,
     },
     button: {
         width: 250,
@@ -133,7 +140,7 @@ const style = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         fontSize: 30,
-        fontWeight: 900,
+        fontWeight: '900',
         fontFamily: 'nunito',
         opacity: 1
     },

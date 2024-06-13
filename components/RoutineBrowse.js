@@ -25,7 +25,7 @@ const RoutineBrowse = ({ route, navigation }) => {
     const [user, setuser] = useState();
 
     // ------------ Routine Data ----------------
-    const [days, setDays] = useState();
+    const [days, setDays] = useState([]);
     const [splitDays, setSplitDays] = useState(); //map
     const [routineName, setroutineName] = useState();
     const [routinePrivacy, setroutinePrivacy] = useState();
@@ -75,16 +75,16 @@ const RoutineBrowse = ({ route, navigation }) => {
             setroutinePrivacy(routine["privacy"]);
 
         } else if (context === "creation") {
+            setnewRoutineModal(true);
             seteditMode(true);
             setSplitDays([]);
-            setDays([]);
             setroutineName("");
             setroutinePrivacy("");
         }
     }
 
     /*
-        *New Function* Which we reload this routine data from the server if the user
+        *New Function Todo* Which we reload this routine data from the server if the user
         Cancels it's staged changes
 
     */
@@ -138,25 +138,9 @@ const RoutineBrowse = ({ route, navigation }) => {
 
     }
 
-
-    if (days == null || splitDays == null) {
-        return (
-            <Tab.Navigator
-                tabBarOptions={{
-                    activeTintColor: '#5D4DE4',
-                    indicatorStyle: {
-                        backgroundColor: '#5D4DE4',
-                    }
-                }}>
-                <Tab.Screen
-                    name="Empty"
-                    component={Text} />
-            </Tab.Navigator >
-        )
-    } else {
-        return (
-            <Context.Provider value={{ em: [editMode, seteditMode,], sd: [splitDays, setSplitDays] }}>
-                {/* New Routine Modal (ONLY USED WHEN CONTEXT IS CREATION)
+    return (
+        <Context.Provider value={{ em: [editMode, seteditMode,], sd: [splitDays, setSplitDays] }}>
+            {/* New Routine Modal (ONLY USED WHEN CONTEXT IS CREATION)
                         - opens once when the routine browse is first opened*
 
                     Data Needed from this modal:
@@ -164,24 +148,29 @@ const RoutineBrowse = ({ route, navigation }) => {
                         - id?
                         - privacy
                 */}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={newRoutineModal}
-                    onRequestClose={() => {
-                        Alert.alert('New Routine Modal Closed');
-                        setnewRoutineModal(!newRoutineModal);
-                    }}
-                >
-                    <View style={style.centeredView}>
-                        <View style={style.modalView}>
-                            <Text style={style.largeText}>New Routine</Text>
-                            <TextInput
-                                style={style.inputStyle}
-                                value={nameInput}
-                                placehodler={"Enter Routine Name"}
-                                onChangeText={text => setnameInput(text)}
-                            />
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={newRoutineModal}
+                onRequestClose={() => {
+                    Alert.alert('New Routine Modal Closed');
+                    setnewRoutineModal(!newRoutineModal);
+                }}
+            >
+                <View style={style.centeredView}>
+                    <View style={style.createModalView}>
+                        <TouchableOpacity style={style.closeButtonSmall} onPress={() => { setnewRoutineModal(false) }}>
+                            <Icon name={"close"} size={40} color="#5D4DE4" />
+                        </TouchableOpacity>
+                        <Text style={[style.largeText, style.header]}>New Routine</Text>
+                        <TextInput
+                            style={style.inputStyleSmall}
+                            value={nameInput}
+                            placeholder="Enter Routine Name"
+                            onChangeText={text => setnameInput(text)}
+                        />
+                        <View style={style.privacyContainer}>
+                            <Text style={style.medLText}>Routine Privacy: </Text>
                             <Picker
                                 style={style.pickerLong}
                                 selectedValue={privacyPickVal}
@@ -191,113 +180,119 @@ const RoutineBrowse = ({ route, navigation }) => {
                                 <Picker.item label="public" value="public" />
                                 <Picker.item label="friends" value="friends" />
                             </Picker>
-                            <TouchableOpacity style={style.button}
-                                onPress={() => {
-                                    setroutineName(nameInput);
-                                    setroutinePrivacy(privacyPickVal);
-                                }}
-                            >
-                                <Text style={style.mediumText}>Start Routine Creation!</Text>
-                            </TouchableOpacity>
                         </View>
+
+                        <TouchableOpacity style={[style.button, { marginBottom: 15 }]}
+                            onPress={() => {
+                                setroutineName(nameInput);
+                                setroutinePrivacy(privacyPickVal);
+                                setnewRoutineModal(false);
+                            }}
+                        >
+                            <Text style={style.mediumText}>Start Routine Creation!</Text>
+                        </TouchableOpacity>
                     </View>
-                </Modal>
+                </View>
+            </Modal>
 
-                {/* Add Day Modal */}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={addDayModal}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                        setaddDayModal(!addDayModal);
-                    }}>
-                    <View style={style.centeredView}>
-                        <View style={style.modalView}>
-                            <Text style={style.largeText}>Add Day</Text>
-                            <TextInput
-                                value={dayName}
-                                style={style.inputStyle}
-                                placeholder="Enter Day Name"
-                                onChangeText={text => setdayName(text)}
-                            />
-                        </View>
+            {/* Add Day Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={addDayModal}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setaddDayModal(!addDayModal);
+                }}>
+                <View style={style.centeredView}>
+                    <View style={style.modalView}>
+                        <Text style={style.largeText}>Add Day</Text>
+                        <TextInput
+                            value={dayName}
+                            style={style.inputStyle}
+                            placeholder="Enter Day Name"
+                            onChangeText={text => setdayName(text)}
+                        />
                     </View>
-                </Modal>
-                <Text style={style.bigHeader}>{routineName}</Text>
-                <Tab.Navigator
-                    tabBarOptions={{
-                        activeTintColor: '#5D4DE4',
-                        indicatorStyle: {
-                            backgroundColor: '#5D4DE4',
-                        }
-                    }}>
-                    {
-                        days != null && splitDays != null ?
-                            <>
-                                {
-                                    days.map((day) => (
-                                        // maps days to screens in the tab navigator
-                                        // day is just the title and dayData is an array of exercies taken from split days
-                                        <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse", setstaged: setstaged }} />
-                                    ))
-                                }
-                            </>
-                            :
-                            <Text>Loading</Text>
+                </View>
+            </Modal>
+            <Tab.Navigator
+                tabBarOptions={{
+                    activeTintColor: '#000000',
+                    indicatorStyle: {
+                        backgroundColor: '#5D4DE4',
+                    },
+                    tabBarLabelStyle: {
+                        fontFamily: 'nunito'
                     }
-                </Tab.Navigator>
-                <View style={style.buttonBox}>
-
-
-
-                    {/* Edit Button  (ONLY VISIBLE IN BROWSE MODE)*/
-                        context === "browse" ?
-                            <TouchableOpacity style={style.editButton} onPress={() => {
-                                if (editMode) {
-                                    //RESET: Essentially go back to back to non edit mode and remove all staged changed
-                                    setstaged(false); //UNstaged
-                                    //Changes reset to when the page was opened
-                                    setSplitDays(routine["splitDays"]);
-                                    setDays(routine["days"]);
-                                    seteditMode(!editMode);
-                                } else {
-                                    seteditMode(!editMode);
-                                    setstaged(false);
-                                }
-                            }}>
-                                <Icon name={editMode ? "close" : "square-edit-outline"} size={40} color="#5D4DE4"></Icon>
-                            </TouchableOpacity>
-                            :
-                            <></>
-                    }
-
-                    {staged ?
-                        /* ------- SAVE BUTTON -------- */
-                        <TouchableOpacity style={style.saveButton} onPress={() => {
-                            uploadRoutine();
-                            //after routine is uploaded restore to un-staged and editMode off
-                            setstaged(false);
-                            seteditMode(false);
+                }}>
+                {
+                    days != 0 ?
+                        <>
+                            {
+                                days.map((day) => (
+                                    // maps days to screens in the tab navigator
+                                    // day is just the title and dayData is an array of exercies taken from split days
+                                    <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse", setstaged: setstaged }} />
+                                ))
+                            }
+                        </>
+                        :
+                        <Tab.Screen
+                            name="Empty"
+                            component={Text} />
+                }
+            </Tab.Navigator>
+            <View style={style.buttonBox}>
+                {/* Edit Button  (ONLY VISIBLE IN BROWSE MODE)*/
+                    context === "browse" ?
+                        <TouchableOpacity style={style.editButton} onPress={() => {
+                            if (editMode) {
+                                //RESET: Essentially go back to back to non edit mode and remove all staged changed
+                                setstaged(false); //UNstaged
+                                //Changes reset to when the page was opened
+                                setSplitDays(routine["splitDays"]);
+                                setDays(routine["days"]);
+                                seteditMode(!editMode);
+                            } else {
+                                seteditMode(!editMode);
+                                setstaged(false);
+                            }
                         }}>
-                            <Text style={style.mediumText}>Save</Text>
+                            <Icon name={editMode ? "close" : "square-edit-outline"} size={40} color="#5D4DE4"></Icon>
                         </TouchableOpacity>
                         :
-                        <>
-                        </>
-                    }
-                </View>
+                        <></>
+                }
 
-            </Context.Provider>
+                {staged ?
+                    /* ------- SAVE BUTTON -------- */
+                    <TouchableOpacity style={style.saveButton} onPress={() => {
+                        uploadRoutine();
+                        //after routine is uploaded restore to un-staged and editMode off
+                        setstaged(false);
+                        seteditMode(false);
+                    }}>
+                        <Text style={style.mediumText}>Save</Text>
+                    </TouchableOpacity>
+                    :
+                    <>
+                    </>
+                }
+            </View>
 
-        )
-    }
+        </Context.Provider>
+
+    )
 
 
 }
 
 
 const style = StyleSheet.create({
+    header: {
+        marginBottom: 20
+    },
     centeredView: {
         flex: 1,
         justifyContent: 'center',
@@ -320,10 +315,34 @@ const style = StyleSheet.create({
         elevation: 5,
     },
     // ---- creation modal ------
+    createModalView: {
+        margin: 20,
+        width: "90%",
+        backgroundColor: 'white',
+        borderRadius: 30,
+        padding: 30,
+        paddingRight: 100,
+        paddingLeft: 100,
+        alignItems: 'center',
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    privacyContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: -10
+    },
     pickerLong: {
         height: 50,
         width: 150,
-        marginBottom: 150
+        marginBottom: 160,
+
     },
 
     bigHeader: {
@@ -332,6 +351,20 @@ const style = StyleSheet.create({
         textAlign: 'center',
         marginTop: 10,
         marginBottom: 10
+    },
+    inputStyleSmall: {
+        marginTop: 20,
+        width: 300,
+        height: 50,
+        textAlign: 'left',
+        backgroundColor: "#FFFFFF00",
+        borderWidth: 1,
+        borderColor: "#6F7285",
+        margin: 10,
+        borderRadius: 10,
+        padding: 5,
+        fontSize: 20,
+        fontFamily: 'nunito',
     },
     inputStyle: {
         marginTop: 20,
@@ -405,6 +438,11 @@ const style = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#5D4DE4"
     },
+    closeButtonSmall: {
+        position: 'absolute',
+        top: 15,
+        left: 15
+    },
     saveButton: {
         borderRadius: 30,
         width: 100,
@@ -426,6 +464,7 @@ const style = StyleSheet.create({
     },
     buttonBox: {
         flexDirection: 'row',
+        backgroundColor: '#F8F8FF',
         justifyContent: 'space-between',
         width: '100%'
     },
@@ -452,6 +491,10 @@ const style = StyleSheet.create({
     //--------------------- Text STUFF ---------------------
     mediumText: {
         fontSize: 20,
+        fontFamily: 'nunito'
+    },
+    medLText: {
+        fontSize: 25,
         fontFamily: 'nunito'
     },
     largeText: {

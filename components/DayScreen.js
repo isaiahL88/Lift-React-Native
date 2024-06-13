@@ -315,6 +315,7 @@ const DayScreen = ({ navigation, route }) => {
 
 
             <FlatList
+                style={style.exerciseList}
                 data={splitDays[day]}
                 renderItem={({ item }) => {
                     if (item.hasNote) {
@@ -340,7 +341,6 @@ const DayScreen = ({ navigation, route }) => {
                         )
                     }
                 }}
-                style={style.exerciseList}
 
             />
             {
@@ -450,7 +450,8 @@ const style = StyleSheet.create({
         fontFamily: 'nunito'
     },
     exerciseList: {
-        marginTop: 15
+        marginTop: 15,
+        height: "100%"
     },
     exerciseDescr: {
         width: 120,

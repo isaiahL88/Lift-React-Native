@@ -29,7 +29,7 @@ export default function MyRoutines({ navigation }) {
 
   function handleRoutinePress(routine) {
     //todo
-    navigation.navigate("RoutineBrowse", { routine: routine, context: "browse" });
+    navigation.navigate("RoutineBrowse", { routine: routine, context: "browse", name: routine.name });
     console.log("start routine browse?");
   }
 
