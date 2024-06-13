@@ -37,6 +37,8 @@ const RoutineBrowse = ({ route, navigation }) => {
     const [editMode, seteditMode] = useState(false);
     //Add day modal display
     const [addDayModal, setaddDayModal] = useState(false);
+    //Select Style Modal
+    const [styleSelectModal, setstyleSelectModal] = useState(false);
     //Used for the day name in the add day modal
     const [dayName, setdayName] = useState("");
 
@@ -89,6 +91,15 @@ const RoutineBrowse = ({ route, navigation }) => {
 
     */
 
+    /*
+        Adds another day to this routine
+
+        Note, if this is in a browse context, cancelling will remove this day
+        (the view depends on the day and splitDays state varis...... )
+    */
+    function addDay() {
+
+    }
 
     /*  
         This function will get the exercises from each DayScreen and upload the routine into the db
@@ -140,6 +151,14 @@ const RoutineBrowse = ({ route, navigation }) => {
 
     return (
         <Context.Provider value={{ em: [editMode, seteditMode,], sd: [splitDays, setSplitDays] }}>
+
+            {/* ROUTINE CREATION PROCESS :
+                    NewRoutineModal -> styleSelectModal -> addDayModal? -> Routine Browse
+                                                        -> Routine Browse (TODO)
+                Also:                   press add day   -> addDayModal
+            */}
+
+
             {/* New Routine Modal (ONLY USED WHEN CONTEXT IS CREATION)
                         - opens once when the routine browse is first opened*
 
@@ -186,6 +205,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                             onPress={() => {
                                 setroutineName(nameInput);
                                 setroutinePrivacy(privacyPickVal);
+                                navigation.setOptions({ headerTitle: nameInput });
                                 setnewRoutineModal(false);
                             }}
                         >
@@ -194,8 +214,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                     </View>
                 </View>
             </Modal>
-
-            {/* Add Day Modal */}
+            {/* Style Selection Modal */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -206,26 +225,74 @@ const RoutineBrowse = ({ route, navigation }) => {
                 }}>
                 <View style={style.centeredView}>
                     <View style={style.modalView}>
+
+                    </View>
+                </View>
+            </Modal>
+            {/* Add Day Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={addDayModal}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setaddDayModal(!addDayModal);
+                }}>
+                <View style={style.centeredView}>
+                    <View style={style.createModalView}>
+                        <TouchableOpacity style={style.closeButtonSmall} onPress={() => { setaddDayModal(false) }}>
+                            <Icon name={"close"} size={40} color="#5D4DE4" />
+                        </TouchableOpacity>
                         <Text style={style.largeText}>Add Day</Text>
                         <TextInput
                             value={dayName}
-                            style={style.inputStyle}
+                            style={style.inputStyleSmall}
                             placeholder="Enter Day Name"
                             onChangeText={text => setdayName(text)}
                         />
+                        <TouchableOpacity style={style.buttonSmall} onPress={() => {
+                            setDays([dayName, ...days]);
+                            const newObj = { ...splitDays, [dayName]: [] }
+                            setSplitDays(newObj);
+                        }}>
+                            <Text style={style.buttonText}>Add</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
             <Tab.Navigator
+                style={style.topTabStyle}
                 tabBarOptions={{
                     activeTintColor: '#000000',
                     indicatorStyle: {
                         backgroundColor: '#5D4DE4',
+                        width: '40%'
                     },
                     tabBarLabelStyle: {
                         fontFamily: 'nunito'
+                    },
+                    tabBarStyle: {
+                        borderWidth: 0,
+                        margin: 20,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+
+                    },
+                    tabBarContentContainerStyle: {
+                        width: 500,
+                        justifyContent: 'center',
+                        alignItems: 'center'
+
                     }
-                }}>
+                }}
+                screenOptions={{
+                    tabBarItemStyle: {
+                    },
+                    tabBarStyle: {
+                        widht: '50%'
+                    }
+                }}
+            >
                 {
                     days != 0 ?
                         <>
@@ -264,7 +331,17 @@ const RoutineBrowse = ({ route, navigation }) => {
                         :
                         <></>
                 }
-
+                {/* ----------- ADD DAY BUTTON -------------- */
+                    // Only visible in edit mode*
+                    editMode ?
+                        <TouchableOpacity style={style.addDayButton} onPress={() => {
+                            setaddDayModal(true);
+                        }}>
+                            <Icon name="plus-box-multiple" size={40} color="#5D4DE4" />
+                        </TouchableOpacity>
+                        :
+                        <></>
+                }
                 {staged ?
                     /* ------- SAVE BUTTON -------- */
                     <TouchableOpacity style={style.saveButton} onPress={() => {
@@ -279,6 +356,8 @@ const RoutineBrowse = ({ route, navigation }) => {
                     <>
                     </>
                 }
+
+
             </View>
 
         </Context.Provider>
@@ -290,6 +369,7 @@ const RoutineBrowse = ({ route, navigation }) => {
 
 
 const style = StyleSheet.create({
+
     header: {
         marginBottom: 20
     },
@@ -461,6 +541,12 @@ const style = StyleSheet.create({
     },
     editButton: {
         margin: 20,
+    },
+    addDayButton: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        margin: 20
     },
     buttonBox: {
         flexDirection: 'row',

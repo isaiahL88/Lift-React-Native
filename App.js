@@ -20,7 +20,9 @@ export default function App() {
   const [password, setPassword] = useState("pass11");
 
   let [fontsLoaded] = useFonts({
-    'nunito': require('./assets/fonts/nunitoSans.ttf')
+    'nunito': require('./assets/fonts/nunito.ttf'),
+    'nunitoM': require('./assets/fonts/Nunito-Medium.ttf'),
+    'nunitoSB': require('./assets/fonts/Nunito-SemiBold.ttf')
   });
 
   if (!fontsLoaded) {

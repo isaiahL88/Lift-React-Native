@@ -21,11 +21,11 @@ const Home = ({ navigation }) => {
             <Stack.Screen name="MyRoutines" component={MyRoutines} />
             <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomePage} />
             <Stack.Screen name="RoutineBrowse" options={({ navigation, route }) => ({
-                headerTitle: route.params.name, headerTintColor: '#5D4DE4',
+                headerTitle: route.params.name, headerTintColor: '#000000',
                 headerTitleStyle: {
-                    fontFamily: 'nunito',
+                    fontFamily: 'nunitoM',
                     fontSize: 20,
-                    fontWeight: 'bold'
+                    fontWeight: '100',
                 }, headerStyle: {
                     height: 110,
                 },
@@ -33,9 +33,10 @@ const Home = ({ navigation }) => {
                     <TouchableOpacity onPress={() => {
 
                     }}>
-                        <Icon style={{ marginRight: 10 }} name={"cog"} size={35} color="#5D4DE4" />
+                        <Icon style={{ marginRight: 10 }} name={"cog"} size={30} color="#5D4DE4" />
                     </TouchableOpacity>
-                )
+                ),
+                headerShadowVisible: false
             })} component={RoutineBrowse} />
             <Stack.Screen name="RoutineCreate" component={RoutineCreate} />
         </Stack.Navigator>
