@@ -22,7 +22,8 @@ export default function App() {
   let [fontsLoaded] = useFonts({
     'nunito': require('./assets/fonts/nunito.ttf'),
     'nunitoM': require('./assets/fonts/Nunito-Medium.ttf'),
-    'nunitoSB': require('./assets/fonts/Nunito-SemiBold.ttf')
+    'nunitoSB': require('./assets/fonts/Nunito-SemiBold.ttf'),
+    'nunitoItalic': require('./assets/fonts/Nunito-Italic.ttf')
   });
 
   if (!fontsLoaded) {

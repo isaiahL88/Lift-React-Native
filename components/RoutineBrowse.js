@@ -20,6 +20,38 @@ const Tab = createMaterialTopTabNavigator();
 
 */
 const RoutineBrowse = ({ route, navigation }) => {
+    //ROutine Styles
+    const routineStyles = [{
+        name: 'Push Pull Legs',
+        target: 'PowerLifting / BodyBuilding',
+        days: 3
+    }
+        ,
+    {
+        name: 'Arnold Split',
+        target: 'Body Building',
+        days: 6
+    }
+        ,
+    {
+        name: 'Bro Split',
+        target: 'Body Building',
+        days: 6
+    }
+        ,
+    {
+        name: 'Upper Lower',
+        target: 'Body Building',
+        days: 3
+    }
+        ,
+    {
+        name: 'Leg Specialist',
+        target: 'BodyBuilding',
+        days: 5
+    }
+    ];
+
     const { routine, context } = route.params;
 
     const [user, setuser] = useState();
@@ -207,6 +239,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                                 setroutinePrivacy(privacyPickVal);
                                 navigation.setOptions({ headerTitle: nameInput });
                                 setnewRoutineModal(false);
+                                setstyleSelectModal(true);
                             }}
                         >
                             <Text style={style.mediumText}>Start Routine Creation!</Text>
@@ -225,7 +258,29 @@ const RoutineBrowse = ({ route, navigation }) => {
                 }}>
                 <View style={style.centeredView}>
                     <View style={style.modalView}>
-
+                        <Text style={style.largeText}>Create your custom routine</Text>
+                        <TouchableOpacity style={style.routineStyle}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                <Text style={style.largeText}>{item.name}</Text>
+                                <Text style={style.largeText}>{item.days}</Text>
+                            </View>
+                            <Text style={style.textItalic}>{item.target}</Text>
+                        </TouchableOpacity>
+                        <Text style={style.largeText}>OR</Text>
+                        <Text style={style.largeText}>Choose from our Template</Text>
+                        <FlatList
+                            style={style.styleList}
+                            data={routineStyles}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity style={style.routineStyle}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                        <Text style={style.largeText}>{item.name}</Text>
+                                        <Text style={style.largeText}>{item.days}</Text>
+                                    </View>
+                                    <Text style={style.textItalic}>{item.target}</Text>
+                                </TouchableOpacity>
+                            )}
+                        />
                     </View>
                 </View>
             </Modal>
@@ -410,7 +465,13 @@ const style = StyleSheet.create({
         marginBottom: 160,
 
     },
-
+    routineStyle: {
+        width: '%60',
+        padding: 20,
+        borderWidth: 1,
+        borderColor: '#000000',
+        borderRadius: 45,
+    },
     bigHeader: {
         fontSize: 30,
         fontFamily: 'nunito',
@@ -464,6 +525,9 @@ const style = StyleSheet.create({
         fontFamily: 'nunito'
     },
     exerciseList: {
+        marginTop: 15
+    },
+    styleList: {
         marginTop: 15
     },
     exerciseDescr: {
@@ -576,6 +640,10 @@ const style = StyleSheet.create({
     buttonSmallText: {
         fontSize: 13,
         fontFamily: 'nunito'
+    },
+    textItalic: {
+        fontSize: 20,
+        fontFamily: 'nunitoItalic'
     }
     //------------------------------------------
 });
