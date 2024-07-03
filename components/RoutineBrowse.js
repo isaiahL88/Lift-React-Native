@@ -33,7 +33,7 @@ const RoutineBrowse = ({ route, navigation }) => {
         name: 'Push Pull Legs',
         target: 'PowerLifting / BodyBuilding',
         days: 3,
-        daysArr: [],
+        daysArr: ["Push", "Pull", "Legs"],
         splitDays: { Push: [], Pull: [], Legs: [] },
     }
         ,
@@ -280,6 +280,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                                     if (item.name === "Custom Routine") {
                                         setaddDayModal(true);
                                     }
+                                    seteditMode(true);
 
                                 }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

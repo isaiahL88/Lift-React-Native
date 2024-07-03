@@ -1,7 +1,10 @@
-import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Picker } from "@react-native-picker/picker";
 
 const RoutineSetting = () => {
+    const [privacyPickVal, setprivacyPickVal] = useState();
+
     return (
         <View>
             <View style={style.nameContainer}>
@@ -26,7 +29,6 @@ const style = StyleSheet.create({
     page: {
         alignItems: 'center',
         backgroundColor: '#F8F8FF',
-        height: '100%',
         flexDirection: 'column',
         justifyContent: 'flex-start',
         margin: 0
