@@ -273,6 +273,13 @@ const RoutineBrowse = ({ route, navigation }) => {
                             data={routineStyles}
                             renderItem={({ item }) => (
                                 <TouchableOpacity style={style.routineStyle} onPress={() => {
+                                    //Update state according to the selected style
+                                    setDays(item.daysArr);
+                                    setSplitDays(item.splitDays);
+                                    setstyleSelectModal(false);
+                                    if (item.name === "Custom Routine") {
+                                        setaddDayModal(true);
+                                    }
 
                                 }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
