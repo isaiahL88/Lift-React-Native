@@ -22,11 +22,19 @@ const Tab = createMaterialTopTabNavigator();
 const RoutineBrowse = ({ route, navigation }) => {
     //ROutine Styles
     const routineStyles = [{
+        name: "Custom Routine",
+        target: "Build from Scratch!",
+        days: 0,
+        daysArr: [],
+        splitDays: {},
+    }
+        ,
+    {
         name: 'Push Pull Legs',
         target: 'PowerLifting / BodyBuilding',
         days: 3,
         daysArr: [],
-
+        splitDays: { Push: [], Pull: [], Legs: [] },
     }
         ,
     {
@@ -260,14 +268,6 @@ const RoutineBrowse = ({ route, navigation }) => {
                 }}>
                 <View style={style.centeredView}>
                     <View style={style.modalView}>
-                        <TouchableOpacity style={style.routineStyle} onPress={() => {
-
-                        }}>
-                            <Text style={style.largeText}>Create your custom routine</Text>
-
-                        </TouchableOpacity>
-                        <Text style={style.largeText}>OR</Text>
-                        <Text style={style.largeText}>Choose from our Template</Text>
                         <FlatList
                             style={style.styleList}
                             data={routineStyles}
@@ -275,9 +275,9 @@ const RoutineBrowse = ({ route, navigation }) => {
                                 <TouchableOpacity style={style.routineStyle} onPress={() => {
 
                                 }}>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                                        <Text style={style.largeText}>{item.name}</Text>
-                                        <Text style={style.largeText}>{item.days}</Text>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                        <Text style={style.mediumText}>{item.name}</Text>
+                                        <Text style={style.mediumText}>Days: {item.days}</Text>
                                     </View>
                                     <Text style={style.textItalic}>{item.target}</Text>
                                 </TouchableOpacity>
@@ -403,7 +403,7 @@ const RoutineBrowse = ({ route, navigation }) => {
 
             </View>
 
-        </Context.Provider>
+        </Context.Provider >
 
     )
 
@@ -421,12 +421,10 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     }, modalView: {
-        margin: 20,
+        width: '90%',
+        margin: 0,
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 30,
-        paddingRight: 100,
-        paddingLeft: 100,
         alignItems: 'center',
         shadowColor: '#000000',
         shadowOffset: {
@@ -468,11 +466,12 @@ const style = StyleSheet.create({
 
     },
     routineStyle: {
-        width: '%60',
+        width: '%90',
         padding: 20,
         borderWidth: 1,
         borderColor: '#000000',
         borderRadius: 45,
+        margin: 5,
     },
     bigHeader: {
         fontSize: 30,
@@ -530,7 +529,10 @@ const style = StyleSheet.create({
         marginTop: 15
     },
     styleList: {
-        marginTop: 15
+        marginTop: 15,
+        marginBottom: 15,
+        width: 300,
+
     },
     exerciseDescr: {
         width: 120,
@@ -544,22 +546,6 @@ const style = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    }, modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        padding: 30,
-        paddingRight: 100,
-        paddingLeft: 100,
-        alignItems: 'center',
-        shadowColor: '#000000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
     },
 
     //--------------------- BUTTON STUFF ---------------------
