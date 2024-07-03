@@ -24,7 +24,9 @@ const RoutineBrowse = ({ route, navigation }) => {
     const routineStyles = [{
         name: 'Push Pull Legs',
         target: 'PowerLifting / BodyBuilding',
-        days: 3
+        days: 3,
+        daysArr: [],
+
     }
         ,
     {
@@ -258,13 +260,11 @@ const RoutineBrowse = ({ route, navigation }) => {
                 }}>
                 <View style={style.centeredView}>
                     <View style={style.modalView}>
-                        <Text style={style.largeText}>Create your custom routine</Text>
-                        <TouchableOpacity style={style.routineStyle}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                                <Text style={style.largeText}>{item.name}</Text>
-                                <Text style={style.largeText}>{item.days}</Text>
-                            </View>
-                            <Text style={style.textItalic}>{item.target}</Text>
+                        <TouchableOpacity style={style.routineStyle} onPress={() => {
+
+                        }}>
+                            <Text style={style.largeText}>Create your custom routine</Text>
+
                         </TouchableOpacity>
                         <Text style={style.largeText}>OR</Text>
                         <Text style={style.largeText}>Choose from our Template</Text>
@@ -272,7 +272,9 @@ const RoutineBrowse = ({ route, navigation }) => {
                             style={style.styleList}
                             data={routineStyles}
                             renderItem={({ item }) => (
-                                <TouchableOpacity style={style.routineStyle}>
+                                <TouchableOpacity style={style.routineStyle} onPress={() => {
+
+                                }}>
                                     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                         <Text style={style.largeText}>{item.name}</Text>
                                         <Text style={style.largeText}>{item.days}</Text>
