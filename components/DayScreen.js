@@ -461,7 +461,8 @@ const style = StyleSheet.create({
         fontFamily: 'nunito'
     },
     exerciseList: {
-        flexGrow: 0
+        flexGrow: 0,
+        marginTop: 10
     },
     exerciseDescr: {
         width: 120,

@@ -40,25 +40,33 @@ const RoutineBrowse = ({ route, navigation }) => {
     {
         name: 'Arnold Split',
         target: 'Body Building',
-        days: 6
+        days: 6,
+        daysArr: ["Chest Back", "Shoulders & Arms", "Legs"],
+        splitDays: { Push: [], Pull: [], Legs: [] }
     }
         ,
     {
         name: 'Bro Split',
         target: 'Body Building',
-        days: 6
+        days: 6,
+        daysArr: ["Push", "Pull", "Legs"],
+        splitDays: { Push: [], Pull: [], Legs: [] }
     }
         ,
     {
         name: 'Upper Lower',
         target: 'Body Building',
-        days: 3
+        days: 3,
+        daysArr: ["Push", "Pull", "Legs"],
+        splitDays: { Push: [], Pull: [], Legs: [] }
     }
         ,
     {
         name: 'Leg Specialist',
         target: 'BodyBuilding',
-        days: 5
+        days: 5,
+        daysArr: ["Push", "Pull", "Legs"],
+        splitDays: { Push: [], Pull: [], Legs: [] }
     }
     ];
 
@@ -165,7 +173,10 @@ const RoutineBrowse = ({ route, navigation }) => {
             console.log("NEW ROUTINE TO BE UPLOADED: " + JSON.stringify(newRoutine));
             // in this case we can just pull up the saved id in the routine
             const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"), routine.id);
-            await setDoc(userRoutinesRef, newRoutine);
+            await setDoc(userRoutinesRef, newRoutine)
+                .then(() => {
+                    Alert.alert('Routine Updated!');
+                });
 
         } else if (context === "creation") {
             /*
@@ -181,11 +192,18 @@ const RoutineBrowse = ({ route, navigation }) => {
 
             */
             let newRoutine = {
-
+                name: routineName,
+                // id: "", TODO
+                privacy: routine.privacy,
+                days: days,
+                splitDays: splitDays
             };
 
             const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
-            await setDoc(userRoutineRef, newRoutine);
+            await setDoc(userRoutineRef, newRoutine)
+                .then(() => {
+                    Alert.alert('Routine Uploaded!');
+                });
         }
 
 
