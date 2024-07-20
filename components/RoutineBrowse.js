@@ -20,7 +20,7 @@ const Tab = createMaterialTopTabNavigator();
 
 */
 const RoutineBrowse = ({ route, navigation }) => {
-    //ROutine Styles
+    //Routines
     const routineStyles = [{
         name: "Custom Routine",
         target: "Build from Scratch!",
@@ -40,33 +40,35 @@ const RoutineBrowse = ({ route, navigation }) => {
     {
         name: 'Arnold Split',
         target: 'Body Building',
-        days: 6,
+        days: 3,
         daysArr: ["Chest Back", "Shoulders & Arms", "Legs"],
-        splitDays: { Push: [], Pull: [], Legs: [] }
+        splitDays: { 'Chest Back': [], 'Shoulders & Arms': [], 'Legs': [] }
     }
         ,
     {
         name: 'Bro Split',
         target: 'Body Building',
-        days: 6,
-        daysArr: ["Push", "Pull", "Legs"],
-        splitDays: { Push: [], Pull: [], Legs: [] }
+        days: 5,
+        daysArr: ["Chest", "Back", "Arms", "Shoulders", "Legs"],
+        splitDays: {
+            "Chest": [], "Back": [], "Arms": [], "Shoulders": [], "Legs": []
+        }
     }
         ,
     {
         name: 'Upper Lower',
         target: 'Body Building',
-        days: 3,
-        daysArr: ["Push", "Pull", "Legs"],
-        splitDays: { Push: [], Pull: [], Legs: [] }
+        days: 2,
+        daysArr: ["Upper", "Lower"],
+        splitDays: { Upper: [], Lower: [] }
     }
         ,
     {
         name: 'Leg Specialist',
         target: 'BodyBuilding',
         days: 5,
-        daysArr: ["Push", "Pull", "Legs"],
-        splitDays: { Push: [], Pull: [], Legs: [] }
+        daysArr: ["Leg Push", "Upper Push", "Legs Pull", "Upper Pull", "Leg Compounds"],
+        splitDays: { "Leg Push": [], "Upper Push": [], "Legs Pull": [], "Upper Pull": [], "Leg Compounds": [] }
     }
     ];
 
@@ -138,12 +140,12 @@ const RoutineBrowse = ({ route, navigation }) => {
     /*
         *New Function Todo* Which we reload this routine data from the server if the user
         Cancels it's staged changes
-
+    
     */
 
     /*
         Adds another day to this routine
-
+    
         Note, if this is in a browse context, cancelling will remove this day
         (the view depends on the day and splitDays state varis...... )
     */
@@ -153,7 +155,7 @@ const RoutineBrowse = ({ route, navigation }) => {
 
     /*  
         This function will get the exercises from each DayScreen and upload the routine into the db
-
+    
         NOte: the routine may be called from a creation context or even an update context
     */
     async function uploadRoutine() {
@@ -185,11 +187,11 @@ const RoutineBrowse = ({ route, navigation }) => {
                     id?
                     privacy
                     style
-
+    
                 Recorded in RoutineBrowse:
                     days
                     splitDays
-
+    
             */
             let newRoutine = {
                 name: routineName,
