@@ -10,6 +10,9 @@ import { Picker } from "@react-native-picker/picker";
 
 export const Context = React.createContext();
 
+const MODE_CREATION = "creation";
+
+
 const Tab = createMaterialTopTabNavigator();
 
 /*
@@ -72,7 +75,8 @@ const RoutineBrowse = ({ route, navigation }) => {
     }
     ];
 
-    const { routine, context } = route.params;
+    const routine = route.params.routine;
+    const context = route.params.context;
 
     const [user, setuser] = useState();
 
@@ -128,7 +132,7 @@ const RoutineBrowse = ({ route, navigation }) => {
             setroutineName(routine["name"]);
             setroutinePrivacy(routine["privacy"]);
 
-        } else if (context === "creation") {
+        } else if (context === MODE_CREATION) {
             setnewRoutineModal(true);
             seteditMode(true);
             setSplitDays([]);
@@ -143,22 +147,13 @@ const RoutineBrowse = ({ route, navigation }) => {
     
     */
 
-    /*
-        Adds another day to this routine
-    
-        Note, if this is in a browse context, cancelling will remove this day
-        (the view depends on the day and splitDays state varis...... )
-    */
-    function addDay() {
-
-    }
-
     /*  
         This function will get the exercises from each DayScreen and upload the routine into the db
     
         NOte: the routine may be called from a creation context or even an update context
     */
     async function uploadRoutine() {
+        console.log('Context: ' + context + ", uplaodingn..........");
 
 
         if (context === "browse") {
@@ -176,37 +171,30 @@ const RoutineBrowse = ({ route, navigation }) => {
             // in this case we can just pull up the saved id in the routine
             const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"), routine.id);
             await setDoc(userRoutinesRef, newRoutine)
-                .then(() => {
-                    Alert.alert('Routine Updated!');
+                .then((docRef) => {
+                    Alert.alert('Routine Updated! with ID: ' + docRef.id);
+                    console.log('Routine Updated! with ID: ' + docRef.id)
                 });
 
-        } else if (context === "creation") {
-            /*
-                Needed:
-                    name
-                    id?
-                    privacy
-                    style
-    
-                Recorded in RoutineBrowse:
-                    days
-                    splitDays
-    
-            */
+        } else if (context === MODE_CREATION) {
             let newRoutine = {
                 name: routineName,
-                // id: "", TODO
-                privacy: routine.privacy,
+                privacy: privacyPickVal,
                 days: days,
                 splitDays: splitDays
             };
+            console.log("ABOUT TO UPLOAD HERE");
+            try {
+                const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
+                await setDoc(userRoutineRef, newRoutine);
+                Alert.alert("Uploaded Routine!");
+            } catch (error) {
+                console.log(error);
+            }
 
-            const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
-            await setDoc(userRoutineRef, newRoutine)
-                .then(() => {
-                    Alert.alert('Routine Uploaded!');
-                });
+
         }
+        console.log('Context: ' + context);
 
 
     }
@@ -257,9 +245,9 @@ const RoutineBrowse = ({ route, navigation }) => {
                                 selectedValue={privacyPickVal}
                                 onValueChange={(itemValue) => setprivacyPickVal(itemValue)}
                             >
-                                <Picker.item label="private" value="private" />
-                                <Picker.item label="public" value="public" />
-                                <Picker.item label="friends" value="friends" />
+                                <Picker.Item label="private" value="private" />
+                                <Picker.Item label="public" value="public" />
+                                <Picker.Item label="friends" value="friends" />
                             </Picker>
                         </View>
 
@@ -336,9 +324,10 @@ const RoutineBrowse = ({ route, navigation }) => {
                             onChangeText={text => setdayName(text)}
                         />
                         <TouchableOpacity style={style.closeButton} onPress={() => {
-                            setDays([...days, dayName]);
                             const newObj = { ...splitDays, [dayName]: [] }
                             setSplitDays(newObj);
+                            seteditMode(true);
+                            setDays([...days, dayName]);
                             setdayName("");
                             setaddDayModal(false);
                         }}>

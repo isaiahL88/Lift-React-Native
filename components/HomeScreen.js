@@ -4,6 +4,7 @@ import backgroundImg from '../assets/login_fitness_image.jpeg';
 import liftLogo from '../assets/lift-logo.png'
 import { useEffect } from 'react';
 
+const MODE_CREATION = "creation";
 
 
 const HomeScreen = ({ navigation }) => {
@@ -30,7 +31,7 @@ const HomeScreen = ({ navigation }) => {
 
                 <View style={style.routineContainer}>
                     <TouchableOpacity style={style.routineButtons} onPress={() => {
-                        navigation.navigate("RoutineBrowse", { context: "creation" });
+                        navigation.navigate("RoutineBrowse", { context: MODE_CREATION });
                     }}>
                         <Text style={style.buttonText}>Create Routines</Text>
                     </TouchableOpacity>
