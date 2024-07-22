@@ -1,11 +1,10 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, TextInput } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 import { collection, setDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState, useRef, createRef, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DayScreen from './DayScreen';
-import { TextInput } from 'react-native-paper';
 import { Picker } from "@react-native-picker/picker";
 
 export const Context = React.createContext();
@@ -100,9 +99,9 @@ const RoutineBrowse = ({ route, navigation }) => {
 
     //----- New Routine State -----
     const [newRoutineModal, setnewRoutineModal] = useState(context === "creation" ? true : false); //Risky code?
-    const [nameInput, setnameInput] = useState();
+    const [nameInput, setnameInput] = useState("");
     //----- Privacy Picker -----
-    const [privacyPickVal, setprivacyPickVal] = useState();
+    const [privacyPickVal, setprivacyPickVal] = useState("public");
     //----- BackUp Sate ----
     // This is used from a "browse" context when staged changes are cancelled
 
@@ -231,11 +230,12 @@ const RoutineBrowse = ({ route, navigation }) => {
                         <TouchableOpacity style={style.closeButtonSmall} onPress={() => { setnewRoutineModal(false) }}>
                             <Icon name={"close"} size={40} color="#5D4DE4" />
                         </TouchableOpacity>
-                        <Text style={[style.largeText, style.header]}>New Routine</Text>
+                        <Text style={[style.largeText, style.header]} numberOfLines={1}>New Routine</Text>
                         <TextInput
                             style={style.inputStyleSmall}
                             value={nameInput}
                             placeholder="Enter Routine Name"
+                            placeholderTextColor="#999"
                             onChangeText={text => setnameInput(text)}
                         />
                         <View style={style.privacyContainer}>
@@ -260,7 +260,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                                 setstyleSelectModal(true);
                             }}
                         >
-                            <Text style={style.mediumText}>Start Routine Creation!</Text>
+                            <Text style={style.mediumText}>Start!</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -431,7 +431,9 @@ const RoutineBrowse = ({ route, navigation }) => {
 const style = StyleSheet.create({
 
     header: {
-        marginBottom: 20
+        marginBottom: 20,
+        marginLeft: 0,
+        marginRight: 0
     },
     centeredView: {
         flex: 1,
@@ -459,8 +461,8 @@ const style = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 30,
         padding: 30,
-        paddingRight: 100,
-        paddingLeft: 100,
+        paddingRight: 30,
+        paddingLeft: 30,
         alignItems: 'center',
         shadowColor: '#000000',
         shadowOffset: {
