@@ -24,6 +24,12 @@ const RoutineSetting = ({ navigation, route }) => {
                     <Picker.Item label="friends" value="friends" />
                 </Picker>
             </View>
+            <View>
+                <Text>Edit Name</Text>
+            </View>
+            <View>
+                <Text>Edit Name</Text>
+            </View>
         </View>
     )
 }

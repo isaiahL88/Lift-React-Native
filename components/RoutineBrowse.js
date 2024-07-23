@@ -125,7 +125,7 @@ const RoutineBrowse = ({ route, navigation }) => {
 
     //Ensures that route parms are accurate when passed into settins
     useEffect(() => {
-        navigation.setParams({ pickerVal: routinePrivacy });
+        navigation.setParams({ privacyVal: routinePrivacy });
     }, [routinePrivacy])
 
     function updateRoutineData() {
@@ -134,7 +134,8 @@ const RoutineBrowse = ({ route, navigation }) => {
             setDays(routine["days"]);
             setroutineName(routine["name"]);
             setroutinePrivacy(routine["privacy"]);
-            navigation.setParams({ pickerVal: privacyPickVal });
+            navigation.setParams({ privacyVal: privacyPickVal });
+
 
         } else if (context === MODE_CREATION) {
             setnewRoutineModal(true);
@@ -157,9 +158,6 @@ const RoutineBrowse = ({ route, navigation }) => {
         NOte: the routine may be called from a creation context or even an update context
     */
     async function uploadRoutine() {
-        console.log('Context: ' + context + ", uplaodingn..........");
-
-
         if (context === "browse") {
             // UPDATING ROUTINE
             let newRoutine = {
@@ -171,7 +169,6 @@ const RoutineBrowse = ({ route, navigation }) => {
                 days: days,
                 splitDays: splitDays
             }
-            console.log("NEW ROUTINE TO BE UPLOADED: " + JSON.stringify(newRoutine));
             // in this case we can just pull up the saved id in the routine
             const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"), routine.id);
             await setDoc(userRoutinesRef, newRoutine)
@@ -187,7 +184,6 @@ const RoutineBrowse = ({ route, navigation }) => {
                 days: days,
                 splitDays: splitDays
             };
-            console.log("ABOUT TO UPLOAD HERE");
             try {
                 const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
                 await setDoc(userRoutineRef, newRoutine);
@@ -198,7 +194,6 @@ const RoutineBrowse = ({ route, navigation }) => {
 
 
         }
-        console.log('Context: ' + context);
 
 
     }
@@ -248,7 +243,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                             <Picker
                                 style={style.pickerLong}
                                 selectedValue={privacyPickVal}
-                                onValueChange={(itemValue) => setprivacyPickVal(itemValue)}
+                                onValueChange={(itemValue) => { setprivacyPickVal(itemValue); setroutinePrivacy(itemValue); }}
                             >
                                 <Picker.Item label="private" value="private" />
                                 <Picker.Item label="public" value="public" />

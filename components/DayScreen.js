@@ -35,7 +35,7 @@ const DayScreen = ({ navigation, route }) => {
 
     //Exercise Detail modal
     const [modalVis, setmodalVis] = useState(false);
-    const [modalTitle, setmodalTitle] = useState();
+    const [detailItem, setDetailItem] = useState(false);
     const [modalDisplay, setmodalDisplay] = useState();
 
     //ADd Exercise Modal
@@ -43,7 +43,7 @@ const DayScreen = ({ navigation, route }) => {
 
     //Add Execise Detail modal
     const [exDetailVisible, setexDetailVisisble] = useState(false);
-
+    const [editExerciseMode, seteditExerciseMode] = useState(false)
     //For Add Exercise Search Query
     const [searchQuery, setsearchQuery] = useState("");
     let exerciseList = exerciseJson.exercises;
@@ -114,16 +114,34 @@ const DayScreen = ({ navigation, route }) => {
                 }}>
                 <View style={style.centeredView}>
                     <View style={style.modalView}>
-                        <Text style={style.largeText}>{modalTitle}</Text>
+                        <Text style={style.largeText}>{detailItem.name}</Text>
                         <Text style={style.mediumText}>{modalDisplay}</Text>
                         <TouchableOpacity style={style.closeButton} onPress={() => { setmodalVis(!modalVis) }}>
                             <Text style={style.buttonText}>Close</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={style.editButton} onPress={() => {
+                        {editMode ?
+                            <TouchableOpacity style={style.deleteButton} onPress={() => {
+                                //Removes the item from splitData (Which is from Context API) so no need to permute this change
+                                //First use spread operator as to not modify a reference to a state variable in an incorrect way
+                                //(must use setState.....)
+                                let exercises = JSON.parse(JSON.stringify(splitDays[day]));
+                                //Filter through this array
+                                exercises = exercises.filter((item) => {
+                                    console.log("index of item:" + exercises.indexOf(item));
+                                    console.log("index of detailItem:" + splitDays[day].indexOf(detailItem));
 
-                        }}>
-                            <Icon name={"square-edit-outline"} size={40} color="#5D4DE4"></Icon>
-                        </TouchableOpacity>
+                                    return exercises.indexOf(item) != splitDays[day].indexOf(detailItem);
+                                })
+                                //Then pass the array back into the splitData state variable object
+                                //Using a spread op to get all other days and just replacing the day operated on by this DayScreen
+                                setSplitDays({ ...splitDays, [day]: exercises });
+                                setmodalVis(false);
+                                setstaged(true);
+                            }}>
+                                <Icon name={"delete"} size={40} color="#5D4DE4"></Icon>
+                            </TouchableOpacity>
+                            :
+                            <></>}
                     </View>
                 </View>
             </Modal>
@@ -325,21 +343,21 @@ const DayScreen = ({ navigation, route }) => {
                         </TouchableOpacity>
                     } else if (item.hasNote) {
                         return (
-                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.note); setmodalTitle(item.name); setmodalVis(!modalVis); }}>
+                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.note); setDetailItem(item); setmodalVis(!modalVis); }}>
                                 <Text style={style.exerciseText}>{item.name}</Text>
                                 <Text numberOfLines={1} style={style.exerciseDescrNote}>{item.note}</Text>
                             </TouchableOpacity>
                         )
                     } else if (item.timed) {
                         return (
-                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.time + " " + item.timeUnit); setmodalTitle(item.name); setmodalVis(!modalVis) }}>
+                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.time + " " + item.timeUnit); setDetailItem(item); setmodalVis(!modalVis) }}>
                                 <Text style={style.exerciseText}>{item.name}</Text>
                                 <Text numberOfLines={1} style={style.exerciseDescr}>{item.time} {item.timeUnit}</Text>
                             </TouchableOpacity>
                         )
                     } else {
                         return (
-                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.sets + " x " + item.reps); setmodalTitle(item.name); setmodalVis(!modalVis) }}>
+                            <TouchableOpacity style={style.exercise} onPress={() => { setmodalDisplay(item.sets + " x " + item.reps); setDetailItem(item); setmodalVis(!modalVis) }}>
                                 <Text style={style.exerciseText}>{item.name}</Text>
                                 <Text numberOfLines={1} style={style.exerciseDescr}>{item.sets} sets x {item.reps} reps</Text>
                             </TouchableOpacity>
@@ -365,9 +383,6 @@ const DayScreen = ({ navigation, route }) => {
 
 
 const style = StyleSheet.create({
-    editButton: {
-
-    },
     page: {
         alignItems: 'center',
         backgroundColor: '#F8F8FF',
@@ -567,6 +582,16 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-end'
+    },
+    editButton: {
+        position: 'absolute',
+        right: 20,
+        top: 20
+    },
+    deleteButton: {
+        position: 'absolute',
+        left: 20,
+        bottom: 35
     },
     largeText: {
         fontSize: 30,
