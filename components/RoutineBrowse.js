@@ -396,6 +396,20 @@ const RoutineBrowse = ({ route, navigation }) => {
                         :
                         <></>
                 }
+                {staged ?
+                    /* ------- SAVE BUTTON -------- */
+                    <TouchableOpacity style={style.saveButton} onPress={() => {
+                        uploadRoutine();
+                        //after routine is uploaded restore to un-staged and editMode off
+                        setstaged(false);
+                        seteditMode(false);
+                    }}>
+                        <Text style={style.medLText}>Save</Text>
+                    </TouchableOpacity>
+                    :
+                    <>
+                    </>
+                }
                 {/* ----------- ADD DAY BUTTON -------------- */
                     // Only visible in edit mode*
                     editMode ?
@@ -417,20 +431,6 @@ const RoutineBrowse = ({ route, navigation }) => {
                         </TouchableOpacity>
                         :
                         <></>
-                }
-                {staged ?
-                    /* ------- SAVE BUTTON -------- */
-                    <TouchableOpacity style={style.saveButton} onPress={() => {
-                        uploadRoutine();
-                        //after routine is uploaded restore to un-staged and editMode off
-                        setstaged(false);
-                        seteditMode(false);
-                    }}>
-                        <Text style={style.mediumText}>Save</Text>
-                    </TouchableOpacity>
-                    :
-                    <>
-                    </>
                 }
 
 
@@ -600,15 +600,14 @@ const style = StyleSheet.create({
     },
     saveButton: {
         borderRadius: 30,
-        width: 100,
+        width: 140,
         height: 50,
         margin: 20,
         marginBottom: 25,
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: "#5D4DE4",
         justifyContent: 'center',
         alignItems: 'center',
-        alignSelf: 'flex-end'
     },
     buttonText: {
         fontSize: 20,
@@ -618,9 +617,6 @@ const style = StyleSheet.create({
         margin: 20,
     },
     addDayButton: {
-        position: 'absolute',
-        right: 0,
-        bottom: 0,
         margin: 20
     },
     buttonBox: {
