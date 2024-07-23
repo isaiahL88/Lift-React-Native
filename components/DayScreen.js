@@ -6,6 +6,8 @@ import { Picker } from "@react-native-picker/picker";
 import dismissKeyb from 'react-native-dismiss-keyboard';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Context } from './RoutineBrowse';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 /*
     Currently: Screen representing one day in a routine, lists out exercises
@@ -116,6 +118,11 @@ const DayScreen = ({ navigation, route }) => {
                         <Text style={style.mediumText}>{modalDisplay}</Text>
                         <TouchableOpacity style={style.closeButton} onPress={() => { setmodalVis(!modalVis) }}>
                             <Text style={style.buttonText}>Close</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={style.editButton} onPress={() => {
+
+                        }}>
+                            <Icon name={"square-edit-outline"} size={40} color="#5D4DE4"></Icon>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -358,6 +365,9 @@ const DayScreen = ({ navigation, route }) => {
 
 
 const style = StyleSheet.create({
+    editButton: {
+
+    },
     page: {
         alignItems: 'center',
         backgroundColor: '#F8F8FF',
