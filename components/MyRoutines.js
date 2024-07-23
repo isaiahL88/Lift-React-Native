@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Text, FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, FlatList, View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { collection, query, where, onSnapshot, getDoc, getDocs, doc } from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
+
 import RoutineBrowse from './RoutineBrowse';
 
 
@@ -11,6 +12,9 @@ const Stack = createStackNavigator();
 export default function MyRoutines({ navigation }) {
   const [user, setuser] = useState();
   const [routines, setRoutines] = useState([]);
+  const [deleteMod, setdeleteMod] = useState(false);
+  const [routineSel, setroutineSel] = useState();
+
 
   useEffect(() => {
     FIREBASE_AUTH.onAuthStateChanged(user => {
@@ -27,10 +31,16 @@ export default function MyRoutines({ navigation }) {
     }
   }, [user]);
 
+
+  //Navigates to the selected routine in a browsing context
   function handleRoutinePress(routine) {
-    //todo
     navigation.navigate("RoutineBrowse", { routine: routine, context: "browse", name: routine.name });
     console.log("start routine browse?");
+  }
+
+  async function handleRoutineDelete(routine) {
+    await deleteDoc(doc(FIRESTORE_DB, "users/" + user.uid + "/user-routines", routine.id));
+    Alert.alert("Routine: " + routine.name + " has been deleted");
   }
 
   async function updateUserData() {
@@ -48,24 +58,68 @@ export default function MyRoutines({ navigation }) {
   }
   return (
     <View style={style.page}>
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={deleteMod}
+        style={style.modalSytle}
+      >
+        <View stlye={style.deleteModal}>
+          <Text>Are you sure you want to delete routine? </Text>
+          <Text>{routineSel.name}</Text>
+          <View style={style.buttonBox}>
+            <TouchableOpacity style={style.regButton} onPress={() => {
+              setdeleteMod(false);
+            }}>
+              <Text style={style.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={style.regButton} onPress={() => { handleRoutineDelete(); }}>
+              <Text style={style.buttonText}>Delete</Text>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+      </Modal>
       <FlatList
         data={routines}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => { handleRoutinePress(item) }}>
+          <TouchableOpacity onPress={() => { handleRoutinePress(item) }} onLongPress={() => { setroutineSel(item); setdeleteMod(true); }}>
             <View style={style.routineBox}>
               <Text style={style.routineText}>{item.name}</Text>
               <Text style={style.detailText}>Days: {Object.keys(item.splitDays).length}</Text>
             </View>
           </TouchableOpacity>
-        )}
+        )
+        }
         // needs to be reaplaced TODO: 
         keyExtractor={item => routines.indexOf(item)}
       />
-    </View>
+    </View >
   )
 }
 
 const style = StyleSheet.create({
+  modalSytle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  deleteMod: {
+    margin: 20,
+    width: "90%",
+    backgroundColor: 'white',
+    borderRadius: 30,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   routineBox: {
     width: 370,
     borderWidth: 1,
@@ -86,6 +140,11 @@ const style = StyleSheet.create({
     shadowOpacity: 0.20,
     shadowRadius: 1,
   },
+  buttonBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '100%'
+  },
   page: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -97,6 +156,19 @@ const style = StyleSheet.create({
   bigHeader: {
     fontSize: 40,
     margin: 10
+  },
+  regButton: {
+    marginTop: 20,
+    borderRadius: 30,
+    padding: 10,
+    width: 100,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: "#5D4DE4"
+  },
+  buttonText: {
+    fontSize: 20,
+    fontFamily: 'nunito'
   },
   routineText: {
     fontFamily: 'nunitoSB',

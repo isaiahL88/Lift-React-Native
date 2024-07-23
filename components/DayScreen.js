@@ -289,6 +289,16 @@ const DayScreen = ({ navigation, route }) => {
                                 </View>
                         }
                         <View style={style.buttonBox}>
+
+
+                            <TouchableOpacity style={style.closeButton} onPress={() => {
+                                setexDetailVisisble(!exDetailVisible);
+                                setisTimed(false);
+                                sethasNote(false);
+                                setnote();
+                            }}>
+                                <Text style={style.buttonText}>Close</Text>
+                            </TouchableOpacity>
                             {/* Here is where we create the new exercise object and add it to the current exercises */}
                             {/* User still has to save the routine to cemete these changes in the db */}
                             <TouchableOpacity style={style.closeButton} onPress={() => {
@@ -318,15 +328,6 @@ const DayScreen = ({ navigation, route }) => {
                                 setstaged(true);
                             }}>
                                 <Text style={style.buttonText}>Add</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={style.closeButton} onPress={() => {
-                                setexDetailVisisble(!exDetailVisible);
-                                setisTimed(false);
-                                sethasNote(false);
-                                setnote();
-                            }}>
-                                <Text style={style.buttonText}>Close</Text>
                             </TouchableOpacity>
 
                         </View>
