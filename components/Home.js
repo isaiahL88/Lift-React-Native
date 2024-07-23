@@ -19,7 +19,17 @@ const Home = ({ navigation }) => {
                 headerTitle: '',
             }}
         >
-            <Stack.Screen name="MyRoutines" component={MyRoutines} />
+            <Stack.Screen name="MyRoutines" options={{
+                headerTitle: "My Routines",
+                headerTintColor: '#000000',
+                headerTitleStyle: {
+                    fontFamily: 'nunitoM',
+                    fontSize: 30,
+                    fontWeight: '100',
+                    paddingBottom: 10
+                }
+            }
+            } component={MyRoutines} />
             <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomePage} />
             <Stack.Screen name="RoutineBrowse" options={({ navigation, route }) => ({
                 headerTitle: route.params.name, headerTintColor: '#000000',

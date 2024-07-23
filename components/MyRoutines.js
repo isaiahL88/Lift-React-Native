@@ -47,38 +47,68 @@ export default function MyRoutines({ navigation }) {
 
   }
   return (
-    <View style={style.container}>
-      <Text style={style.bigHeader}>My Routines</Text>
+    <View style={style.page}>
       <FlatList
         data={routines}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => { handleRoutinePress(item) }}>
-            <Text style={style.routineContainer}>{item.name}</Text>
+            <View style={style.routineBox}>
+              <Text style={style.routineText}>{item.name}</Text>
+              <Text style={style.detailText}>Days: {Object.keys(item.splitDays).length}</Text>
+            </View>
           </TouchableOpacity>
         )}
         // needs to be reaplaced TODO: 
         keyExtractor={item => routines.indexOf(item)}
       />
-
     </View>
   )
 }
 
 const style = StyleSheet.create({
-  container: {
+  routineBox: {
+    width: 370,
+    borderWidth: 1,
+    backgroundColor: '#F9F9FB',
+    borderRadius: 20,
+    margin: 3,
+    padding: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderColor: '#5D4DE488',
+    opacity: 1,
+    zIndex: 20,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1,
+  },
+  page: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10
+    backgroundColor: '#F8F8FF',
+    paddingTop: 10,
+    height: '100%'
   }
   ,
   bigHeader: {
     fontSize: 40,
     margin: 10
   },
-  routineContainer: {
-    fontFamily: 'nunito',
+  routineText: {
+    fontFamily: 'nunitoSB',
     fontWeight: 900,
-    fontSize: 25,
+    fontSize: 23,
+    padding: 7,
+    marginBottom: 10
+  },
+  detailText: {
+    fontFamily: 'nunito',
+    fontWeight: 500,
+    fontSize: 20,
     padding: 7,
     marginBottom: 10
   }
