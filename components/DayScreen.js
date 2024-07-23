@@ -28,7 +28,6 @@ const DayScreen = ({ navigation, route }) => {
     const { em, sd } = useContext(Context);
     const [editMode, seteditMode] = em;
     const [splitDays, setSplitDays] = sd;
-    let exercises = splitDays[day];
     const { day, context, setstaged } = route.params;
 
 
@@ -91,12 +90,6 @@ const DayScreen = ({ navigation, route }) => {
             sethasNote(false);
         }
     }, [isTimed])
-
-    // const updateBrowser = () => {
-    //     if (exercises != null && exercises.length >= 1) {
-    //         updateSplit(day, exercises);
-    //     }
-    // }
 
     const updateSearch = (search) => {
         setsearchQuery(search);
@@ -315,7 +308,6 @@ const DayScreen = ({ navigation, route }) => {
                     </View>
                 </View>
             </Modal >
-
             <FlatList
                 style={style.exerciseList}
                 data={editMode ? [...splitDays[day], { addMark: true }] : splitDays[day]}

@@ -123,6 +123,10 @@ const RoutineBrowse = ({ route, navigation }) => {
         }
     }, [user]);
 
+    //Ensures that route parms are accurate when passed into settins
+    useEffect(() => {
+        navigation.setParams({ pickerVal: routinePrivacy });
+    }, [routinePrivacy])
 
     function updateRoutineData() {
         if (context === "browse") {
@@ -130,6 +134,7 @@ const RoutineBrowse = ({ route, navigation }) => {
             setDays(routine["days"]);
             setroutineName(routine["name"]);
             setroutinePrivacy(routine["privacy"]);
+            navigation.setParams({ pickerVal: privacyPickVal });
 
         } else if (context === MODE_CREATION) {
             setnewRoutineModal(true);
@@ -321,15 +326,19 @@ const RoutineBrowse = ({ route, navigation }) => {
                             value={dayName}
                             style={style.inputStyleSmall}
                             placeholder="Enter Day Name"
+                            placeholderTextColor="#999"
                             onChangeText={text => setdayName(text)}
                         />
                         <TouchableOpacity style={style.closeButton} onPress={() => {
                             const newObj = { ...splitDays, [dayName]: [] }
+                            const dayCopy = [...days];
                             setSplitDays(newObj);
-                            seteditMode(true);
-                            setDays([...days, dayName]);
+                            setDays([...days, dayName.toString()]);
+                            setDays([]);
+                            setDays([...days, dayName.toString()]);
                             setdayName("");
                             setaddDayModal(false);
+
                         }}>
                             <Text style={style.buttonText}>Add</Text>
                         </TouchableOpacity>
@@ -352,15 +361,16 @@ const RoutineBrowse = ({ route, navigation }) => {
                     tabBarScrollEnabled: true,
 
                 }}
+
             >
                 {
-                    days != 0 ?
+                    days.length != 0 ?
                         <>
                             {
                                 days.map((day) => (
                                     // maps days to screens in the tab navigator
                                     // day is just the title and dayData is an array of exercies taken from split days
-                                    <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], context: "browse", setstaged: setstaged }} />
+                                    <Tab.Screen name={day} key={day} component={DayScreen} initialParams={{ day: day, dayData: splitDays[day], setstaged: setstaged }} />
                                 ))
                             }
                         </>
@@ -429,7 +439,9 @@ const RoutineBrowse = ({ route, navigation }) => {
 
 
 const style = StyleSheet.create({
+    topTabStyle: {
 
+    },
     header: {
         marginBottom: 20,
         marginLeft: 0,

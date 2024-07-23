@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from "@react-native-picker/picker";
 
-const RoutineSetting = () => {
+const RoutineSetting = ({ navigation, route }) => {
+    const privacyVal = route.params.privacyVal;
     const [privacyPickVal, setprivacyPickVal] = useState();
 
     return (
-        <View>
+        <View style={style.page}>
+            <Text>{route.params.privacyVal}</Text>
             <View style={style.nameContainer}>
 
             </View>
@@ -17,9 +19,9 @@ const RoutineSetting = () => {
                     selectedValue={privacyPickVal}
                     onValueChange={(itemValue) => setprivacyPickVal(itemValue)}
                 >
-                    <Picker.item label="private" value="private" />
-                    <Picker.item label="public" value="public" />
-                    <Picker.item label="friends" value="friends" />
+                    <Picker.Item label="private" value="private" />
+                    <Picker.Item label="public" value="public" />
+                    <Picker.Item label="friends" value="friends" />
                 </Picker>
             </View>
         </View>
@@ -31,12 +33,23 @@ const style = StyleSheet.create({
         backgroundColor: '#F8F8FF',
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        margin: 0
+        margin: 0,
+        height: '100%'
     },
     privacyContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginTop: -10
+    },
+    medLText: {
+        fontSize: 25,
+        fontFamily: 'nunito'
+    },
+    pickerLong: {
+        height: 50,
+        width: 150,
+        marginBottom: 160,
+
     }
 });
 
