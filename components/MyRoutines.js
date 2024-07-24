@@ -38,9 +38,16 @@ export default function MyRoutines({ navigation }) {
     console.log("start routine browse?");
   }
 
-  async function handleRoutineDelete(routine) {
-    await deleteDoc(doc(FIRESTORE_DB, "users/" + user.uid + "/user-routines", routine.id));
-    Alert.alert("Routine: " + routine.name + " has been deleted");
+  async function handleRoutineDelete() {
+    try {
+      await deleteDoc(doc(FIRESTORE_DB, "users/" + user.uid + "/user-routines/", routineSel.id));
+
+    } catch (error) {
+      console.log("issue deleting routine: " + error);
+    } finally {
+      Alert.alert("Routine: " + routine.name + " has been deleted");
+
+    }
   }
 
   async function updateUserData() {
@@ -62,24 +69,26 @@ export default function MyRoutines({ navigation }) {
         animationType='slide'
         transparent={true}
         visible={deleteMod}
-        style={style.modalSytle}
       >
-        <View stlye={style.deleteModal}>
-          <Text>Are you sure you want to delete routine? </Text>
-          <Text>{routineSel.name}</Text>
-          <View style={style.buttonBox}>
-            <TouchableOpacity style={style.regButton} onPress={() => {
-              setdeleteMod(false);
-            }}>
-              <Text style={style.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={style.regButton} onPress={() => { handleRoutineDelete(); }}>
-              <Text style={style.buttonText}>Delete</Text>
-            </TouchableOpacity>
+        <View style={style.modalSytle}>
+          <View stlye={style.deleteModal}>
+            <Text>Are you sure you want to delete routine? </Text>
+            <Text>{routineSel?.name}</Text>
+            <View style={style.buttonBox}>
+              <TouchableOpacity style={style.regButton} onPress={() => {
+                setdeleteMod(false);
+              }}>
+                <Text style={style.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={style.regButton} onPress={() => { handleRoutineDelete(); }}>
+                <Text style={style.buttonText}>Delete</Text>
+              </TouchableOpacity>
 
+            </View>
           </View>
+
         </View>
-      </Modal>
+      </Modal >
       <FlatList
         data={routines}
         renderItem={({ item }) => (
@@ -104,10 +113,10 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  deleteMod: {
+  deleteModal: {
     margin: 20,
     width: "90%",
-    backgroundColor: 'white',
+    backgroundColor: '#000',
     borderRadius: 30,
     padding: 30,
     alignItems: 'center',
