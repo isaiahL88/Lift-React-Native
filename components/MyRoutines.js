@@ -51,6 +51,8 @@ export default function MyRoutines({ navigation }) {
   }
 
   async function updateUserData() {
+    //reset, should fix multi update bug
+    setRoutines([]);
     const userRoutinesRef = collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines");
     const querySnapshot = getDocs(userRoutinesRef);
     (await querySnapshot).forEach(doc => {
