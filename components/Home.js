@@ -6,6 +6,7 @@ import HomePage from './HomePage.js';
 import RoutineCreate from './RoutineCreate.js';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RoutineSetting from './RoutineSetting.js';
+import RoutinePlay from './RoutinePlay.js'
 
 
 const Stack = createStackNavigator();
@@ -44,7 +45,7 @@ const Home = ({ navigation }) => {
                     <TouchableOpacity onPress={() => {
                         // Note we assume the routine should be set before the user presses the settings cog
                         // this might need some validation before navigating
-                        navigation.navigate("RoutineSettings", { routine: route.params.routine });
+                        navigation.navigate("RoutineSettings", { routine: route.params.routine, privacy: route.params.privacyVal });
                     }}>
                         <Icon style={{ marginRight: 10 }} name={"cog"} size={30} color="#5D4DE4" />
                     </TouchableOpacity>
@@ -53,6 +54,7 @@ const Home = ({ navigation }) => {
             })} component={RoutineBrowse} />
             <Stack.Screen name="RoutineSettings" component={RoutineSetting} />
             <Stack.Screen name="RoutineCreate" component={RoutineCreate} />
+            <Stack.Screen name="RoutinePlay" component={RoutinePlay} />
         </Stack.Navigator>
 
 

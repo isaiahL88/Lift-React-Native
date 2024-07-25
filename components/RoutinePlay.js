@@ -42,6 +42,7 @@ const RoutinePlay = () => {
         <View style={style.page}>
             <Text></Text>
             <View style={style.linebreak}></View>
+            <View style={style.descBox}></View>
             {/* Note Box */}
             <FlatList
                 data={notes}
@@ -53,11 +54,16 @@ const RoutinePlay = () => {
                 )}
             />
 
+
         </View>
     )
 }
 
 const style = StyleSheet.create({
+    descBox: {
+        width: '70%',
+        maxHeight: 500
+    },
     noteBox: {
         flex: 1,
     },

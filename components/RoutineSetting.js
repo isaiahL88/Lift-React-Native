@@ -3,12 +3,12 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from "@react-native-picker/picker";
 
 const RoutineSetting = ({ navigation, route }) => {
-    const privacyVal = route.params.privacyVal;
+    const privacyVal = route.params.privacy;
     const [privacyPickVal, setprivacyPickVal] = useState();
 
     return (
         <View style={style.page}>
-            <Text>{route.params.privacyVal}</Text>
+            <Text>{route.params.privacy} test</Text>
             <View style={style.nameContainer}>
 
             </View>

@@ -1,7 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, TextInput } from 'react-native';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
-import { collection, setDoc, doc } from "firebase/firestore";
+import { collection, setDoc, updateDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState, useRef, createRef, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DayScreen from './DayScreen';
@@ -126,6 +126,8 @@ const RoutineBrowse = ({ route, navigation }) => {
     //Ensures that route parms are accurate when passed into settins
     useEffect(() => {
         navigation.setParams({ privacyVal: routinePrivacy });
+        console.log("privacy: " + routinePrivacy);
+
     }, [routinePrivacy])
 
     function updateRoutineData() {
@@ -134,8 +136,6 @@ const RoutineBrowse = ({ route, navigation }) => {
             setDays(routine["days"]);
             setroutineName(routine["name"]);
             setroutinePrivacy(routine["privacy"]);
-            navigation.setParams({ privacyVal: privacyPickVal });
-
 
         } else if (context === MODE_CREATION) {
             setnewRoutineModal(true);
@@ -184,12 +184,15 @@ const RoutineBrowse = ({ route, navigation }) => {
                 days: days,
                 splitDays: splitDays
             };
+            let userRoutineRef
             try {
-                const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
+                userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"));
                 await setDoc(userRoutineRef, newRoutine);
                 Alert.alert("Uploaded Routine!");
             } catch (error) {
                 console.log(error);
+            } finally {
+                await updateDoc(userRoutineRef, { id: userRoutineRef.id });
             }
 
 
@@ -422,11 +425,13 @@ const RoutineBrowse = ({ route, navigation }) => {
                         <></>
                 }
 
-                {/* ----------- Share Routine Button -------------- */
+                {/* ----------- PLay and Share Routine Button -------------- */
                     !editMode ?
                         <>
-                            <TouchableOpacity>
-                                <Icon name="play" size={48} color="#5D4DE4" />
+                            <TouchableOpacity onPress={() => {
+                                navigation.navigate("RoutinePlay", { routine: routine })
+                            }}>
+                                <Icon name="play" size={70} color="#5D4DE4" />
                             </TouchableOpacity>
                             <TouchableOpacity style={style.addDayButton} onPress={() => {
                                 // TODO:
