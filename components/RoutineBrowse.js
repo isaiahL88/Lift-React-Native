@@ -424,11 +424,17 @@ const RoutineBrowse = ({ route, navigation }) => {
 
                 {/* ----------- Share Routine Button -------------- */
                     !editMode ?
-                        <TouchableOpacity style={style.addDayButton} onPress={() => {
-                            // TODO:
-                        }}>
-                            <Icon name="share" size={48} color="#5D4DE4" />
-                        </TouchableOpacity>
+                        <>
+                            <TouchableOpacity>
+                                <Icon name="play" size={48} color="#5D4DE4" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={style.addDayButton} onPress={() => {
+                                // TODO:
+                            }}>
+                                <Icon name="share" size={48} color="#5D4DE4" />
+                            </TouchableOpacity>
+                        </>
+
                         :
                         <></>
                 }
