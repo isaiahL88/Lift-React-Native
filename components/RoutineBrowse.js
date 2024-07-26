@@ -149,8 +149,17 @@ const RoutineBrowse = ({ route, navigation }) => {
     /*
         *New Function Todo* Which we reload this routine data from the server if the user
         Cancels it's staged changes
-    
+
+        Note: Whenever changes are saved the routine route param is overwritten, but because we don't
+        change this param before a save we can fall back if the use decides to cancel some changes
+
     */
+    function resetChanges() {
+        setSplitDays(routine["splitDays"]);
+        setDays(routine["days"]);
+        setroutineName(routine["name"]);
+        setroutinePrivacy(routine["privacy"]);
+    }
 
     /*  
         This function will get the exercises from each DayScreen and upload the routine into the db
@@ -406,6 +415,8 @@ const RoutineBrowse = ({ route, navigation }) => {
                             } else {
                                 seteditMode(!editMode);
                                 setstaged(false);
+                                //This will bring bag the state of the routine before the changes
+                                resetChanges();
                             }
                         }}>
                             <Icon name={editMode ? "close" : "square-edit-outline"} size={40} color="#5D4DE4"></Icon>
