@@ -169,13 +169,22 @@ const RoutineBrowse = ({ route, navigation }) => {
                 days: days,
                 splitDays: splitDays
             }
-            // in this case we can just pull up the saved id in the routine
-            const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"), routine.id);
-            await setDoc(userRoutinesRef, newRoutine)
-                .then((docRef) => {
-                    Alert.alert('Routine Updated! with ID: ' + docRef.id);
-                    console.log('Routine Updated! with ID: ' + docRef.id)
-                });
+            try {
+                // in this case we can just pull up the saved id in the routine
+                const userRoutinesRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"), routine.id);
+                await setDoc(userRoutinesRef, newRoutine)
+                    .then((docRef) => {
+                        Alert.alert('Routine Updated! with ID: ' + docRef.id);
+                        console.log('Routine Updated! with ID: ' + docRef.id)
+                    });
+            } catch (error) {
+                console.log("error updating routine: " + error);
+            } finally {
+                //Also update routine in params in case the use navigates to RoutineSettings or RoutinePlay
+                newRoutine['id'] = userRoutineRef.id;
+                navigation.setParams({ routine: newRoutine });
+            }
+
 
         } else if (context === MODE_CREATION) {
             let newRoutine = {
@@ -192,7 +201,12 @@ const RoutineBrowse = ({ route, navigation }) => {
             } catch (error) {
                 console.log(error);
             } finally {
+                //Updates the doc with the ID that firebase generated
                 await updateDoc(userRoutineRef, { id: userRoutineRef.id });
+
+                //Also update routine in params in case the use navigates to RoutineSettings or RoutinePlay
+                newRoutine['id'] = userRoutineRef.id;
+                navigation.setParams({ routine: newRoutine });
             }
 
 
