@@ -426,7 +426,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                 }
                 {staged ?
                     /* ------- SAVE BUTTON -------- */
-                    <TouchableOpacity style={style.saveButton} onPress={() => {
+                    <TouchableOpacity style={context === "browse" ? style.saveButton : {}} onPress={() => {
                         uploadRoutine();
                         //after routine is uploaded restore to un-staged and editMode off
                         setstaged(false);
