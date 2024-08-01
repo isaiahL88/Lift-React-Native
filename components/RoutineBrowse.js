@@ -75,7 +75,6 @@ const RoutineBrowse = ({ route, navigation }) => {
     ];
 
     const routine = route.params.routine;
-    const context = route.params.context;
 
     const [user, setuser] = useState();
 

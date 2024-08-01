@@ -1,16 +1,42 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Picker } from "@react-native-picker/picker";
-import { FlatList } from 'react-native-gesture-handler';
 import { TextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
+import { collection, updateDoc, doc } from "firebase/firestore";
+const [user, setuser] = useState();
+
 
 
 const RoutineSetting = ({ navigation, route }) => {
     const privacyVal = route.params.privacy;
-    const [routineName, setroutineName] = useState(rout.params.routine.name);
+    const [routineName, setroutineName] = useState(route.params.routine.name);
     const [editName, seteditName] = useState(false);
     const [privacyPickVal, setprivacyPickVal] = useState();
+
+    //AUTH
+    useEffect(() => {
+        FIREBASE_AUTH.onAuthStateChanged(user => {
+            if (user) { setuser(user); }
+        });
+
+    }, []);
+
+    async function uploadName() {
+        try {
+            const userRoutineRef = doc(collection(FIRESTORE_DB, "users/" + user.uid + "/user-routines/"), routine.id);
+            await updateDoc(userRoutineRef, {
+                name: routineName
+            })
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Failed to update routine name.");
+        } finally {
+            Alert.alert("Updated Routine Name");
+        }
+
+    }
 
     return (
         <View style={style.page}>
@@ -21,20 +47,24 @@ const RoutineSetting = ({ navigation, route }) => {
                 <TextInput
                     value={routineName}
                     style={style.textInput}
-                    editable={false} selectTextOnFocus={false}
+                    editable={editName} selectTextOnFocus={false}
+                    onChangeText={text => setroutineName(text)}
                 />
                 {
                     editName ?
                         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <TouchableOpacity >
+                            <TouchableOpacity onPress={() => {
+                                uploadName();
+                                seteditName(false);
+                            }}>
                                 <Icon name={"check"} size={10} color="#5D4DE4" />
                             </TouchableOpacity>
-                            <TouchableOpacity >
+                            <TouchableOpacity onPress={() => { setroutineName(route.params.routine.name); seteditName(false); }}>
                                 <Icon name={"cancel"} size={10} color="#5D4DE4" />
                             </TouchableOpacity>
                         </View>
                         :
-                        <TouchableOpacity >
+                        <TouchableOpacity onPress={() => { seteditName(true); }}>
                             <Icon name={"square-edit-outline"} size={10} color="#5D4DE4" />
                         </TouchableOpacity>
                 }
