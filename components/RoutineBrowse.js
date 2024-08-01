@@ -83,7 +83,7 @@ const RoutineBrowse = ({ route, navigation }) => {
     const [days, setDays] = useState([]);
     const [splitDays, setSplitDays] = useState(); //map
     const [routineName, setroutineName] = useState();
-    const [routinePrivacy, setroutinePrivacy] = useState();
+    const [routinePrivacy, setroutinePrivacy] = useState("public");
     //-------------------------------------------
 
     //Did the user stage any changes to this routine
@@ -100,8 +100,6 @@ const RoutineBrowse = ({ route, navigation }) => {
     //----- New Routine State -----
     const [newRoutineModal, setnewRoutineModal] = useState(context === "creation" ? true : false); //Risky code?
     const [nameInput, setnameInput] = useState("");
-    //----- Privacy Picker -----
-    const [privacyPickVal, setprivacyPickVal] = useState("public");
     //----- BackUp Sate ----
     // This is used from a "browse" context when staged changes are cancelled
 
@@ -123,13 +121,6 @@ const RoutineBrowse = ({ route, navigation }) => {
         }
     }, [user]);
 
-    //Ensures that route parms are accurate when passed into settins
-    useEffect(() => {
-        navigation.setParams({ privacyVal: routinePrivacy });
-        console.log("privacy: " + routinePrivacy);
-
-    }, [routinePrivacy])
-
     function updateRoutineData() {
         if (context === "browse") {
             setSplitDays(routine["splitDays"]);
@@ -142,7 +133,6 @@ const RoutineBrowse = ({ route, navigation }) => {
             seteditMode(true);
             setSplitDays([]);
             setroutineName("");
-            setroutinePrivacy("");
         }
     }
 
@@ -198,7 +188,7 @@ const RoutineBrowse = ({ route, navigation }) => {
         } else if (context === MODE_CREATION) {
             let newRoutine = {
                 name: routineName,
-                privacy: privacyPickVal,
+                privacy: routinePrivacy,
                 days: days,
                 splitDays: splitDays
             };
@@ -268,8 +258,8 @@ const RoutineBrowse = ({ route, navigation }) => {
                             <Text style={style.medLText}>Routine Privacy: </Text>
                             <Picker
                                 style={style.pickerLong}
-                                selectedValue={privacyPickVal}
-                                onValueChange={(itemValue) => { setprivacyPickVal(itemValue); setroutinePrivacy(itemValue); }}
+                                selectedValue={routinePrivacy}
+                                onValueChange={(itemValue) => { setroutinePrivacy(itemValue); }}
                             >
                                 <Picker.Item label="private" value="private" />
                                 <Picker.Item label="public" value="public" />

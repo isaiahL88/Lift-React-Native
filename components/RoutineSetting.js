@@ -12,7 +12,7 @@ const RoutineSetting = ({ navigation, route }) => {
     const [routineName, setroutineName] = useState(route.params.routine.name);
     const [editName, seteditName] = useState(false);
     const [editPrivacy, seteditPrivacy] = useState(false);
-    const [privacyPickVal, setprivacyPickVal] = useState(route.params.privacy);
+    const [privacyPickVal, setprivacyPickVal] = useState(route.params.routine.privacy);
     const [user, setuser] = useState();
 
     //AUTH
@@ -53,7 +53,8 @@ const RoutineSetting = ({ navigation, route }) => {
             Alert.alert("Failed to update routine name.");
         } finally {
             Alert.alert("Updated Routine Privacy");
-            navigation.setParams({ privacy: privacyPickVal });
+            const newRoutine = { ...route.params.routine, 'privacy': privacyPickVal };
+            navigation.setParams({ routine: newRoutine });
         }
     }
 
@@ -112,7 +113,7 @@ const RoutineSetting = ({ navigation, route }) => {
                         }}>
                             <Icon name={"check"} size={40} color="#5D4DE4" />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setprivacyPickVal(route.params.privacy); seteditName(false); }}>
+                        <TouchableOpacity onPress={() => { setprivacyPickVal(route.params.privacy); seteditPrivacy(false); }}>
                             <Icon name={"cancel"} size={40} color="#5D4DE4" />
                         </TouchableOpacity>
                     </>
