@@ -33,11 +33,13 @@ const Home = ({ navigation }) => {
             } component={MyRoutines} />
             <Stack.Screen options={{ headerShown: false }} name="HomeScreen" component={HomePage} />
             <Stack.Screen name="RoutineBrowse" options={({ navigation, route }) => ({
+                headerBackTitle: 'Back',
                 headerTitle: route.params.name, headerTintColor: '#000000',
                 headerTitleStyle: {
                     fontFamily: 'nunitoM',
                     fontSize: 20,
                     fontWeight: '100',
+                    maxWidth: 200,
                 }, headerStyle: {
                     height: 110,
                 },

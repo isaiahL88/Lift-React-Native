@@ -96,6 +96,8 @@ const RoutineBrowse = ({ route, navigation }) => {
     const [styleSelectModal, setstyleSelectModal] = useState(false);
     //Used for the day name in the add day modal
     const [dayName, setdayName] = useState("");
+    const [removeDayModal, setremoveDayModal] = useState(false);
+    const [selectedDay, setselectedDay] = useState();
 
     //----- New Routine State -----
     const [newRoutineModal, setnewRoutineModal] = useState(context === "creation" ? true : false); //Risky code?
@@ -340,7 +342,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                             placeholderTextColor="#999"
                             onChangeText={text => setdayName(text)}
                         />
-                        <TouchableOpacity style={style.closeButton} onPress={() => {
+                        <TouchableOpacity style={style.buttonSmall} onPress={() => {
                             const newObj = { ...splitDays, [dayName]: [] }
                             const dayCopy = [...days];
                             setSplitDays(newObj);
@@ -349,10 +351,57 @@ const RoutineBrowse = ({ route, navigation }) => {
                             setDays([...days, dayName.toString()]);
                             setdayName("");
                             setaddDayModal(false);
-
+                            setstaged(true);
                         }}>
                             <Text style={style.buttonText}>Add</Text>
                         </TouchableOpacity>
+                        <Text style={style.largeText}>Remove Day</Text>
+                        <FlatList
+                            style={style.horizontalList}
+                            data={days}
+                            renderItem={(item) => {
+                                <TouchableOpacity style={style.dayBox} onPress={() => {
+                                    setselectedDay(item);
+                                    setremoveDayModal(true);
+                                    setaddDayModal(false);
+                                }}>
+                                    <Text>{item}</Text>
+                                </TouchableOpacity>
+                            }}
+                            horizontal
+                        />
+                    </View>
+                </View>
+            </Modal>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={removeDayModal}
+            >
+                <View style={style.centeredView}>
+                    <View style={style.createModalView}>
+                        <Text>Are you sure you want to delete day { }?</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                            <TouchableOpacity style={style.closeButton} onPress={() => {
+                                setselectedDay("");
+                                setremoveDayModal(false);
+                            }}>
+                                <Text style={style.buttonText}>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={style.closeButton} onPress={() => {
+                                //Modify state to remove the day
+                                const tempSD = { ...splitDays };
+                                delete tempSD[selectedDay];
+                                const tempDays = days.filter((item => item !== selectedDay));
+
+                                setSplitDays(tempSD);
+                                setDays(tempDays);
+                                setstaged(true);
+                                setremoveDayModal(false);
+                            }}>
+                                <Text style={style.buttonText}>Delete</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -610,14 +659,31 @@ const style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    horizontalList: {
 
+    },
+    dayBox: {
+        maxWidth: 250,
+        height: 100,
+        borderRadius: 30,
+        margin: 20,
+        borderColor: "#5D4DE4",
+        backgroundColor: "#fff"
+    },
     //--------------------- BUTTON STUFF ---------------------
     closeButton: {
         marginTop: 20,
         borderRadius: 30,
         padding: 10,
         borderWidth: 1,
-        borderColor: "#5D4DE4"
+        borderColor: "#5D4DE4",
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.20,
+        shadowRadius: 1,
     },
     closeButtonSmall: {
         position: 'absolute',
@@ -661,15 +727,20 @@ const style = StyleSheet.create({
         alignItems: 'center'
     },
     buttonSmall: {
+        width: 150,
+        alignItems: 'center',
+        marginTop: 20,
         borderRadius: 30,
-        width: 60,
-        height: 30,
-        margin: 10,
+        padding: 10,
         borderWidth: 1,
         borderColor: "#5D4DE4",
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'flex-end'
+        shadowColor: '#000000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.20,
+        shadowRadius: 1,
     },
     //--------------------- Text STUFF ---------------------
     mediumText: {
