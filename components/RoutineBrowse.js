@@ -116,6 +116,9 @@ const RoutineBrowse = ({ route, navigation }) => {
     useEffect(() => {
         console.log("UPDATED SPLIT DAYS: " + JSON.stringify(splitDays));
     }, [splitDays]);
+    useEffect(() => {
+        console.log("upd_days: " + JSON.stringify(days));
+    }, [days]);
 
     useEffect(() => {
         if (user) {
@@ -359,7 +362,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                         <FlatList
                             style={style.horizontalList}
                             data={days}
-                            renderItem={(item) => {
+                            renderItem={({ item }) => (
                                 <TouchableOpacity style={style.dayBox} onPress={() => {
                                     setselectedDay(item);
                                     setremoveDayModal(true);
@@ -367,7 +370,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                                 }}>
                                     <Text>{item}</Text>
                                 </TouchableOpacity>
-                            }}
+                            )}
                             horizontal
                         />
                     </View>
@@ -565,6 +568,7 @@ const style = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
+        height: "90%"
     },
     privacyContainer: {
         flexDirection: 'row',
@@ -660,7 +664,7 @@ const style = StyleSheet.create({
         alignItems: 'center',
     },
     horizontalList: {
-
+        width: '90%',
     },
     dayBox: {
         maxWidth: 250,
@@ -668,7 +672,6 @@ const style = StyleSheet.create({
         borderRadius: 30,
         margin: 20,
         borderColor: "#5D4DE4",
-        backgroundColor: "#fff"
     },
     //--------------------- BUTTON STUFF ---------------------
     closeButton: {
