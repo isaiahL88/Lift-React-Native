@@ -25,8 +25,8 @@ const HomeScreen = ({ navigation }) => {
     }
     return (
         <>
-            <Tab />
             <View style={style.homeContainer}>
+                <Tab />
                 <Image style={style.imageStyle} source={liftLogo} />
 
                 <View style={style.routineContainer}>

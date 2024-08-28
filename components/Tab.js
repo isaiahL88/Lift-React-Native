@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, Ani } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import userPic from '../assets/profile.png';
 
 const data = [
     { label: 'Profile', value: '1' },
@@ -9,9 +10,32 @@ const data = [
     { label: 'Logout', value: '3' }
 ];
 
+const FadeInFlatList = props => {
+    const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 10000,
+            useNativeDriver: true,
+        }).start();
+    }, [fadeAnim]);
+
+    return (
+        <Animated.FlatList // Special animatable View
+            style={{
+                ...props.style,
+                opacity: fadeAnim, // Bind opacity to animated value
+            }}>
+            {props.children}
+        </Animated.FlatList>
+    );
+};
+
 const Tab = () => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
+    const [dropdown, setdrpodown] = useState(false);
 
     const renderLabel = () => {
         if (value || isFocus) {
@@ -26,26 +50,28 @@ const Tab = () => {
 
     return (
         <View style={styles.container}>
-            <Dropdown
-                style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-                placeholderStyle={styles.placeholderStyle}
-                selectedTextStyle={styles.selectedTextStyle}
-                inputSearchStyle={styles.inputSearchStyle}
-                iconStyle={styles.iconStyle}
-                data={data}
-                maxHeight={300}
-                labelField="label"
-                valueField="value"
-                placeholder={!isFocus ? 'Welcome' : '...'}
-                searchPlaceholder="Search..."
-                value={value}
-                onFocus={() => setIsFocus(true)}
-                onBlur={() => setIsFocus(false)}
-                onChange={item => {
-                    setValue(item.value);
-                    setIsFocus(false);
-                }}
-            />
+            <TouchableOpacity style={styles.imageBox} onPress={() => {
+                setdrpodown(!dropdown);
+            }}>
+                <Image source={userPic} style={styles.imageStyle} width={10} height={10} />
+            </TouchableOpacity>
+            {
+                dropdown ?
+                    <FlatList
+                        data={data}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity onPress={() => {
+
+                            }}>
+                                <Text style={styles.medText}>item.label</Text>
+                            </TouchableOpacity>
+                        )
+                        }
+                    />
+                    :
+                    <>
+                    </>
+            }
         </View>
     );
 };
@@ -54,21 +80,27 @@ export default Tab;
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 5,
-        right: 0,
+        marginTop: 45,
+        right: 10,
         top: 0,
         position: 'absolute',
         zIndex: 10
     },
-    dropdown: {
+    imageStyle: {
+        widht: 50,
         height: 50,
-        width: 130,
-        borderColor: '#5D4DE4',
-        backgroundColor: 'white',
-        borderWidth: 0.5,
-        borderRadius: 20,
-        paddingHorizontal: 8,
-        paddingLeft: 20
+        marginRight: 0,
+        right: 0,
+        position: 'absolute',
+        resizeMode: 'contain'
+    },
+    imageBox: {
+        right: 0,
+        position: 'absolute',
+    },
+    dropdownContainer: {
+        flexDirection: 'column',
+        alignItems: 'center'
     },
     icon: {
         marginRight: 5,
@@ -98,4 +130,9 @@ const styles = StyleSheet.create({
         height: 40,
         fontSize: 16,
     },
+    // ------------ Text-------------
+    medText: {
+        fontSize: 25,
+        fontFamily: 'nunito'
+    }
 });

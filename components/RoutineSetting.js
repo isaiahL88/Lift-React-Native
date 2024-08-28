@@ -121,6 +121,7 @@ const RoutineSetting = ({ navigation, route }) => {
                     <></>
                 }
             </View>
+            {/* Edit Days */}
 
         </View>
     )
