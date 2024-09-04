@@ -53,14 +53,17 @@ const Tab = () => {
             <TouchableOpacity style={styles.imageBox} onPress={() => {
                 setdrpodown(!dropdown);
             }}>
-                <Image source={userPic} style={styles.imageStyle} width={10} height={10} />
+                <View style={styles.imageCircle}>
+                    <Image source={userPic} style={styles.imageStyle} width={50} height={50} />
+
+                </View>
             </TouchableOpacity>
             {
                 dropdown ?
                     <FlatList
                         data={data}
                         renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => {
+                            <TouchableOpacity stlye={styles.dropitem} onPress={() => {
 
                             }}>
                                 <Text style={styles.medText}>item.label</Text>
@@ -80,19 +83,30 @@ export default Tab;
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 45,
-        right: 10,
-        top: 0,
+        marginTop: 40,
         position: 'absolute',
-        zIndex: 10
+        backgroundColor: "#CBCBEF",
+        zIndex: 10,
+        width: '93%',
+        justifyContent: 'flex-start',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+    },
+    imageCircle: {
+        borderRadius: 45,
+        overflow: "hidden",
+        borderWidth: 1,
+        borderColor: "grey",
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "#F8F8FF"
     },
     imageStyle: {
-        widht: 50,
-        height: 50,
-        marginRight: 0,
-        right: 0,
-        position: 'absolute',
-        resizeMode: 'contain'
+        marginTop: -5,
+        width: 35,
+        height: 35,
     },
     imageBox: {
         right: 0,
@@ -101,6 +115,10 @@ const styles = StyleSheet.create({
     dropdownContainer: {
         flexDirection: 'column',
         alignItems: 'center'
+    },
+    dropitem: {
+        widht: 150,
+        height: 100,
     },
     icon: {
         marginRight: 5,

@@ -48,7 +48,7 @@ const RoutinePlay = () => {
                 data={notes}
                 horizontal
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={selectedNote === notes.indexOf(item) ? noteSelected : note} onPress={() => { setselectedNote(notes.indexOf(item)) }}>
+                    <TouchableOpacity style={selectedNote === notes.indexOf(item) ? selectedNote : note} onPress={() => { setselectedNote(notes.indexOf(item)) }}>
                         <Text>{selectedNote === notes.indexOf(item) ? item.expandedData : item.data}</Text>
                     </TouchableOpacity>
                 )}
