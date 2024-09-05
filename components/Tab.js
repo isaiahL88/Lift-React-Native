@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, Ani } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, Animated } from 'react-native';
+
 import userPic from '../assets/profile.png';
 
 const data = [
@@ -10,32 +9,12 @@ const data = [
     { label: 'Logout', value: '3' }
 ];
 
-const FadeInFlatList = props => {
-    const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
-
-    useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 10000,
-            useNativeDriver: true,
-        }).start();
-    }, [fadeAnim]);
-
-    return (
-        <Animated.FlatList // Special animatable View
-            style={{
-                ...props.style,
-                opacity: fadeAnim, // Bind opacity to animated value
-            }}>
-            {props.children}
-        </Animated.FlatList>
-    );
-};
-
 const Tab = () => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const [dropdown, setdrpodown] = useState(false);
+    //Fade variable for tab container
+    const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
 
     const renderLabel = () => {
         if (value || isFocus) {
@@ -48,8 +27,9 @@ const Tab = () => {
         return null;
     };
 
+
     return (
-        <View style={styles.container}>
+        <View style={dropdown ? styles.container : styles.containerTiny}>
             <TouchableOpacity style={styles.imageBox} onPress={() => {
                 setdrpodown(!dropdown);
             }}>
@@ -66,7 +46,7 @@ const Tab = () => {
                             <TouchableOpacity stlye={styles.dropitem} onPress={() => {
 
                             }}>
-                                <Text style={styles.medText}>item.label</Text>
+                                <Text style={styles.medText}>{item.label}</Text>
                             </TouchableOpacity>
                         )
                         }
@@ -82,26 +62,44 @@ const Tab = () => {
 export default Tab;
 
 const styles = StyleSheet.create({
+    containerTiny: {
+        marginTop: 40,
+        position: 'absolute',
+        zIndex: 10,
+        flexDirection: 'column',
+        right: 0,
+        alignItems: 'flex-end',
+        marginRight: 10,
+        backgroundColor: "#F8F8FF",
+        borderWidth: 1,
+        borderColor: "grey",
+        borderRadius: 45,
+    },
     container: {
         marginTop: 40,
         position: 'absolute',
-        backgroundColor: "#CBCBEF",
         zIndex: 10,
-        width: '93%',
-        justifyContent: 'flex-start',
+        width: '30%',
         flexDirection: 'column',
+        right: 0,
         alignItems: 'flex-end',
+        marginRight: 10,
+        backgroundColor: "#F8F8FF",
+        borderWidth: 1,
+        borderColor: '#000',
+        borderRadius: 10,
+        padding: 10
     },
     imageCircle: {
         borderRadius: 45,
         overflow: "hidden",
-        borderWidth: 1,
-        borderColor: "grey",
+
         width: 50,
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: "#F8F8FF"
+        backgroundColor: "#F8F8FF",
+        zIndex: 20
     },
     imageStyle: {
         marginTop: -5,
@@ -109,16 +107,16 @@ const styles = StyleSheet.create({
         height: 35,
     },
     imageBox: {
-        right: 0,
-        position: 'absolute',
+
     },
     dropdownContainer: {
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     dropitem: {
-        widht: 150,
+        width: 150,
         height: 100,
+        backgroundColor: "#CBCBEF",
     },
     icon: {
         marginRight: 5,
