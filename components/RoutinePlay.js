@@ -1,12 +1,15 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, TextInput } from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useEffect, useState } from 'react';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 import { collection, getDoc, doc } from "firebase/firestore";
 
+const Tab = createMaterialTopTabNavigator();
+export const Context = React.createContext();
 
 
 
-const RoutinePlay = () => {
+const RoutinePlay = ({ route, navigation }) => {
     const notes = [
         {
             data: "215lbs",
@@ -29,6 +32,22 @@ const RoutinePlay = () => {
     const [selectedNote, setselectedNote] = useState(0);
 
 
+    const routine = route.params.routine;
+    const [exercises, setexercises] = useState();
+    /*Each exercise has a respective array of exercisePerformed objects which hold 
+    *routineLog -
+    * [
+    *     exerciseLog  - {
+    *          exercise: ...exerciseObject,
+    *          exerciseLogs: [
+    *                           type: // the type of log this is ( weight, time, completed)
+    *                       ],
+    *          unit: //(either lbs, time, or completion)
+    *          sets: //number of exercisLogs( number of sets done of this exercise)
+    *      }
+    * ]
+    */
+    const [routineLog, setroutineLog] = useState([]);
 
     //This function will load in randomized notes one by one
     //Note: this simply comsumes statistics from the database, 
@@ -39,23 +58,49 @@ const RoutinePlay = () => {
 
 
     return (
-        <View style={style.page}>
-            <Text></Text>
-            <View style={style.linebreak}></View>
-            <View style={style.descBox}></View>
-            {/* Note Box */}
-            <FlatList
-                data={notes}
-                horizontal
-                renderItem={({ item }) => (
-                    <TouchableOpacity style={selectedNote === notes.indexOf(item) ? selectedNote : note} onPress={() => { setselectedNote(notes.indexOf(item)) }}>
-                        <Text>{selectedNote === notes.indexOf(item) ? item.expandedData : item.data}</Text>
-                    </TouchableOpacity>
-                )}
-            />
+        //This Context provider allows all the PlayScreens to update the routine log as exercises are performed
+        <Context.Provider valye={{ rL: [routineLog, setroutineLog] }}>
+            <View style={style.page}>
+                <Text></Text>
+                <View style={style.linebreak}></View>
+                <View style={style.descBox}></View>
+                {/* Note Box */}
+                <FlatList
+                    data={notes}
+                    horizontal
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={selectedNote === notes.indexOf(item) ? selectedNote : note} onPress={() => { setselectedNote(notes.indexOf(item)) }}>
+                            <Text>{selectedNote === notes.indexOf(item) ? item.expandedData : item.data}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+                <Tab.Navigator
+                    style={style.topTabStyle}
+                    tabBarOptions={{
+                        activeTintColor: '#000000',
+                        indicatorStyle: {
+                            backgroundColor: '#5D4DE4',
+                        },
+                        tabBarLabelStyle: {
+                            fontFamily: 'nunito'
+                        },
 
+                    }}
+                    screenOptions={{
+                        tabBarScrollEnabled: true,
 
-        </View>
+                    }}
+                >
+                    {
+                        exercises.map((exercise) => (
+                            <Tab.Screen name={exercise} key={exercise} component={exerciseScreen} initialParams={{ exercise: exercise }} />
+                        ))
+                    }
+                </Tab.Navigator>
+
+            </View >
+
+        </Context.Provider>
     )
 }
 
