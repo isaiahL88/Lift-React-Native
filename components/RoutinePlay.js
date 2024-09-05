@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, TextInput } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Modal, Alert, TextInput, createContext } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 import { collection, getDoc, doc } from "firebase/firestore";
 
@@ -33,7 +33,7 @@ const RoutinePlay = ({ route, navigation }) => {
 
 
     const routine = route.params.routine;
-    const [exercises, setexercises] = useState();
+    const [exercises, setexercises] = useState([]);
     /*Each exercise has a respective array of exercisePerformed objects which hold 
     *routineLog -
     * [
@@ -56,15 +56,16 @@ const RoutinePlay = ({ route, navigation }) => {
 
     }
 
+    useEffect(() => {
 
+    }, [routine])
     return (
         //This Context provider allows all the PlayScreens to update the routine log as exercises are performed
         <Context.Provider valye={{ rL: [routineLog, setroutineLog] }}>
-            <View style={style.page}>
-                <Text></Text>
+            {/* <Text></Text>
                 <View style={style.linebreak}></View>
                 <View style={style.descBox}></View>
-                {/* Note Box */}
+                {/* Note Box 
                 <FlatList
                     data={notes}
                     horizontal
@@ -73,34 +74,38 @@ const RoutinePlay = ({ route, navigation }) => {
                             <Text>{selectedNote === notes.indexOf(item) ? item.expandedData : item.data}</Text>
                         </TouchableOpacity>
                     )}
-                />
-                <Tab.Navigator
-                    style={style.topTabStyle}
-                    tabBarOptions={{
-                        activeTintColor: '#000000',
-                        indicatorStyle: {
-                            backgroundColor: '#5D4DE4',
-                        },
-                        tabBarLabelStyle: {
-                            fontFamily: 'nunito'
-                        },
+                /> */}
+            <Tab.Navigator
+                style={style.topTabStyle}
+                tabBarOptions={{
+                    activeTintColor: '#000000',
+                    indicatorStyle: {
+                        backgroundColor: '#5D4DE4',
+                    },
+                    tabBarLabelStyle: {
+                        fontFamily: 'nunito'
+                    },
 
-                    }}
-                    screenOptions={{
-                        tabBarScrollEnabled: true,
+                }}
+                screenOptions={{
+                    tabBarScrollEnabled: true,
 
-                    }}
-                >
-                    {
+                }}
+            >
+                {
+                    exercises.length === 0 ?
+                        <>
+                            <Tab.Screen name="empty" key="default" component={Text} />
+                        </> :
+
                         exercises.map((exercise) => (
-                            <Tab.Screen name={exercise} key={exercise} component={exerciseScreen} initialParams={{ exercise: exercise }} />
+                            <Tab.Screen name={exercise} key={exercise} component={Text} initialParams={{ exercise: exercise }} />
                         ))
-                    }
-                </Tab.Navigator>
+                }
+            </Tab.Navigator>
 
-            </View >
 
-        </Context.Provider>
+        </Context.Provider >
     )
 }
 
