@@ -105,6 +105,9 @@ const RoutineBrowse = ({ route, navigation }) => {
     //----- BackUp Sate ----
     // This is used from a "browse" context when staged changes are cancelled
 
+    const [activeTab, setActiveTab] = useState(null); // To hold the active tab name
+
+
     useEffect(() => {
         FIREBASE_AUTH.onAuthStateChanged(user => {
             if (user) { setuser(user); }
@@ -220,7 +223,7 @@ const RoutineBrowse = ({ route, navigation }) => {
     }
 
     return (
-        <Context.Provider value={{ em: [editMode, seteditMode,], sd: [splitDays, setSplitDays] }}>
+        <Context.Provider value={{ em: [editMode, seteditMode,], sd: [splitDays, setSplitDays], at: [activeTab, setActiveTab] }}>
 
             {/* ROUTINE CREATION PROCESS :
                     NewRoutineModal -> styleSelectModal -> addDayModal? -> Routine Browse
@@ -408,6 +411,11 @@ const RoutineBrowse = ({ route, navigation }) => {
                     </View>
                 </View>
             </Modal>
+            <View>
+                {/* Display active tab information */}
+                <Text>Active Tab: {activeTab}</Text>
+            </View>
+
             <Tab.Navigator
                 style={style.topTabStyle}
                 tabBarOptions={{
@@ -443,6 +451,7 @@ const RoutineBrowse = ({ route, navigation }) => {
                             component={Text} />
                 }
             </Tab.Navigator>
+
             <View style={style.buttonBox}>
                 {/* Edit Button  (ONLY VISIBLE IN BROWSE MODE)*/
                     context === "browse" ?
@@ -492,11 +501,11 @@ const RoutineBrowse = ({ route, navigation }) => {
                         <></>
                 }
 
-                {/* ----------- PLay and Share Routine Button -------------- */
+                {/* ----------- Play and Share Routine Button -------------- */
                     !editMode ?
                         <>
                             <TouchableOpacity onPress={() => {
-                                navigation.navigate("RoutinePlay", { routine: routine })
+                                navigation.navigate("RoutinePlay", { routine: routine, day: activeTab })
                             }}>
                                 <Icon name="play" size={70} color="#5D4DE4" />
                             </TouchableOpacity>

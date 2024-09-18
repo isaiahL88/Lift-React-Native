@@ -56,8 +56,9 @@ const RoutinePlay = ({ route, navigation }) => {
 
     }
 
+    // Note, a route.params.day should be passed or this will cause problems
     useEffect(() => {
-
+        setexercises(routine["splitDays"][route.params.day])
     }, [routine])
     return (
         //This Context provider allows all the PlayScreens to update the routine log as exercises are performed

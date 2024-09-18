@@ -56,7 +56,28 @@ const Home = ({ navigation }) => {
             })} component={RoutineBrowse} />
             <Stack.Screen name="RoutineSettings" component={RoutineSetting} />
             <Stack.Screen name="RoutineCreate" component={RoutineCreate} />
-            <Stack.Screen name="RoutinePlay" component={RoutinePlay} />
+            <Stack.Screen name="RoutinePlay" component={RoutinePlay} options={({ navigation, route }) => ({
+                headerBackTitle: 'Back',
+                headerTitle: route.params.routine.name, headerTintColor: '#000000',
+                headerTitleStyle: {
+                    fontFamily: 'nunitoM',
+                    fontSize: 20,
+                    fontWeight: '100',
+                    maxWidth: 200,
+                }, headerStyle: {
+                    height: 110,
+                },
+                headerRight: () => (
+                    <TouchableOpacity onPress={() => {
+                        // Note we assume the routine should be set before the user presses the settings cog
+                        // this might need some validation before navigating
+                        navigation.navigate("RoutineSettings", { routine: route.params.routine, privacy: route.params.privacyVal });
+                    }}>
+                        <Icon style={{ marginRight: 10 }} name={"cog"} size={30} color="#5D4DE4" />
+                    </TouchableOpacity>
+                ),
+                headerShadowVisible: false
+            })} />
         </Stack.Navigator>
 
 

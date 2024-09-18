@@ -7,6 +7,8 @@ import dismissKeyb from 'react-native-dismiss-keyboard';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Context } from './RoutineBrowse';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useIsFocused } from '@react-navigation/native';
+
 
 
 /*
@@ -27,9 +29,11 @@ const DayScreen = ({ navigation, route }) => {
 
     //Using context from the routine browser to permute editmode and split days between all Day Screens
     //First we deconstruct the two sets for editMode and split Days
-    const { em, sd } = useContext(Context);
+    const { em, sd, at } = useContext(Context);
     const [editMode, seteditMode] = em;
     const [splitDays, setSplitDays] = sd;
+    const [activeTab, setActiveTab] = at;
+    const isFocused = useIsFocused();
     const { day, context, setstaged } = route.params;
 
 
@@ -66,6 +70,13 @@ const DayScreen = ({ navigation, route }) => {
     const [pickerVal1, setpickerVal1] = useState();
     const [pickerVal2, setpickerVal2] = useState();
     const [pickerVal3, setpickerVal3] = useState();
+
+    //Maintains accurate 'activeTab' var in Routine Browse
+    useEffect(() => {
+        if (isFocused) {
+            setActiveTab(day);
+        }
+    }, [isFocused])
 
     useEffect(() => {
         console.log("EDITMODE IS: " + editMode);
