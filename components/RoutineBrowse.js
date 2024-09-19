@@ -411,10 +411,6 @@ const RoutineBrowse = ({ route, navigation }) => {
                     </View>
                 </View>
             </Modal>
-            <View>
-                {/* Display active tab information */}
-                <Text>Active Tab: {activeTab}</Text>
-            </View>
 
             <Tab.Navigator
                 style={style.topTabStyle}

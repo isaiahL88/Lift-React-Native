@@ -3,6 +3,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import React, { useEffect, useState } from 'react';
 import { FIREBASE_AUTH, FIRESTORE_DB } from '../firebaseConfig';
 import { collection, getDoc, doc } from "firebase/firestore";
+import PlayScreen from './PlayScreen'
 
 const Tab = createMaterialTopTabNavigator();
 export const Context = React.createContext();
@@ -30,17 +31,17 @@ const RoutinePlay = ({ route, navigation }) => {
 
     ];
     const [selectedNote, setselectedNote] = useState(0);
-
-
     const routine = route.params.routine;
     const [exercises, setexercises] = useState([]);
+    const [counterSeconds, setcounterSeconds] = useState();
     /*Each exercise has a respective array of exercisePerformed objects which hold 
     *routineLog -
     * [
     *     exerciseLog  - {
     *          exercise: ...exerciseObject,
     *          exerciseLogs: [
-    *                           type: // the type of log this is ( weight, time, completed)
+    *                           reps?, //optional
+    *                           value
     *                       ],
     *          unit: //(either lbs, time, or completion)
     *          sets: //number of exercisLogs( number of sets done of this exercise)
@@ -63,19 +64,9 @@ const RoutinePlay = ({ route, navigation }) => {
     return (
         //This Context provider allows all the PlayScreens to update the routine log as exercises are performed
         <Context.Provider valye={{ rL: [routineLog, setroutineLog] }}>
-            {/* <Text></Text>
-                <View style={style.linebreak}></View>
-                <View style={style.descBox}></View>
-                {/* Note Box 
-                <FlatList
-                    data={notes}
-                    horizontal
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={selectedNote === notes.indexOf(item) ? selectedNote : note} onPress={() => { setselectedNote(notes.indexOf(item)) }}>
-                            <Text>{selectedNote === notes.indexOf(item) ? item.expandedData : item.data}</Text>
-                        </TouchableOpacity>
-                    )}
-                /> */}
+            <View style={style.textBox}>
+                <Text>:</Text>
+            </View>
             <Tab.Navigator
                 style={style.topTabStyle}
                 tabBarOptions={{
@@ -99,8 +90,8 @@ const RoutinePlay = ({ route, navigation }) => {
                             <Tab.Screen name="empty" key="default" component={Text} />
                         </> :
 
-                        exercises.map((exercise) => (
-                            <Tab.Screen name={exercise} key={exercise} component={Text} initialParams={{ exercise: exercise }} />
+                        exercises.map(exercise => (
+                            <Tab.Screen name={exercise["name"]} key={exercise["name"]} component={PlayScreen} initialParams={{ exercise: exercise }} />
                         ))
                 }
             </Tab.Navigator>
@@ -114,6 +105,13 @@ const style = StyleSheet.create({
     descBox: {
         width: '70%',
         maxHeight: 500
+    },
+    textBox: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fff',
+        margin: 0,
+        padding: 0
     },
     noteBox: {
         flex: 1,
